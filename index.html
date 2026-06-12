@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="src\assets\images\6-9-2026 - Icon Logo Panlapan - Full Orange.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Panlapan Creative Lab — Turning Ideas into Impactful Creations. Strategy. Creativity. Growth." />
+    <title>Panlapan Creative Lab</title>
+    <style>
+      /* Prevent FOUC */
+      html { visibility: hidden; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+      // Show content after fonts/styles load
+      document.addEventListener('DOMContentLoaded', () => {
+        document.documentElement.style.visibility = 'visible'
+      })
+    </script>
+  </body>
+</html>

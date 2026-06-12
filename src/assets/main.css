@@ -1,0 +1,303 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================
+   PANLAPAN — Global Styles
+   Font: Century Gothic
+   Theme: Black & White minimal
+   ================================================ */
+
+:root {
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-white-60: rgba(255, 255, 255, 0.60);
+  --color-white-20: rgba(255, 255, 255, 0.20);
+  --color-white-10: rgba(255, 255, 255, 0.10);
+  --color-black-20: rgba(0, 0, 0, 0.20);
+
+  /* Light theme — Works section & Work Detail */
+  --color-off-white: #F5F4F0;
+  --color-text-dark: #111111;
+  --color-text-dark-60: rgba(17, 17, 17, 0.60);
+  --color-text-dark-35: rgba(17, 17, 17, 0.35);
+  --color-border-dark: rgba(17, 17, 17, 0.10);
+
+  --font-primary: "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+
+  /* Spacing scale */
+  --section-padding: 7rem 2rem;
+  --section-padding-mobile: 5rem 1.5rem;
+
+  /* Transitions */
+  --transition-base: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  visibility: visible;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--color-black);
+  color: var(--color-white);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: none; /* Custom cursor */
+}
+
+/* ===== CUSTOM CURSOR ===== */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-white);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring.is-hovering {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(255, 255, 255, 1);
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+p, span, a, li {
+  font-family: var(--font-primary);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+/* ===== LENIS SMOOTH SCROLL ===== */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.overflow-clip {
+  overflow: hidden;
+}
+
+.text-reveal-wrapper {
+  overflow: hidden;
+  display: block;
+}
+
+.will-animate {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* ===== SECTION BASE ===== */
+.section {
+  padding: var(--section-padding);
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--section-padding-mobile);
+  }
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-white-20);
+}
+
+/* ===== EYEBROW LABEL ===== */
+.eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-white-60);
+  font-weight: 400;
+}
+
+/* ===== LINK UNDERLINE HOVER ===== */
+.link-hover {
+  position: relative;
+  display: inline-block;
+}
+
+.link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-white);
+  transition: width var(--transition-base);
+}
+
+.link-hover:hover::after {
+  width: 100%;
+}
+
+/* ===== BUTTON BASE ===== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 100px;
+  cursor: none;
+  transition: transform var(--transition-base), background var(--transition-base);
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  transform: scale(1.04);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: transparent;
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 100px;
+  cursor: none;
+  transition: all var(--transition-base);
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  border-color: var(--color-white);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== MARQUEE / TICKER ===== */
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* ===== PAGE TRANSITION ===== */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+
+  body {
+    cursor: auto;
+  }
+}
