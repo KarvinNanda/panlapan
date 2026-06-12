@@ -41,7 +41,7 @@
     </section>
 
     <!-- Cover image -->
-    <section class="work-detail__cover" ref="coverRef">
+    <!-- <section class="work-detail__cover" ref="coverRef">
       <div class="work-detail__cover-img-wrap">
         <img
           :src="project.coverImage || project.thumbnail"
@@ -50,7 +50,7 @@
           loading="eager"
         />
       </div>
-    </section>
+    </section> -->
 
     <!-- Content -->
     <section class="work-detail__content">
