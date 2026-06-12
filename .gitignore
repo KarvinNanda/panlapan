@@ -53,5 +53,4 @@ coverage/
 *.skp
 *.ai
 *.psd
-public/assets/images/
-src/assets/images/
+# public/assets/images/
