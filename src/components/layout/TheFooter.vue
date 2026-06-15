@@ -15,7 +15,7 @@
             <path d="M2 8l10 7 10-7" stroke="currentColor" stroke-width="1.5"/>
           </svg>
         </a>
-        <a href="https://instagram.com/panlapan" target="_blank" rel="noopener noreferrer"
+        <a href="https://www.instagram.com/panlapancreative/" target="_blank" rel="noopener noreferrer"
            class="footer__social-btn" aria-label="Instagram" data-cursor-hover>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.5"/>
