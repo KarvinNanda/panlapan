@@ -208,11 +208,11 @@ onUnmounted(() => {
   padding-top: 6rem;
   background: var(--color-off-white);
   min-height: 100dvh;
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to bottom,
     #000000 0px,
     var(--color-off-white) 120px
-  );
+  ); */
   background-attachment: local;
 }
 

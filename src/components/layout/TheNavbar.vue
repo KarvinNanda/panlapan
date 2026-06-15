@@ -1,5 +1,5 @@
 <template>
-  <header ref="navRef" class="navbar" :class="{ 'navbar--scrolled': isScrolled, 'navbar--hidden': isHidden }">
+  <header v-if="!isDetailPage" ref="navRef" class="navbar" :class="{ 'navbar--scrolled': isScrolled, 'navbar--hidden': isHidden }">
     <div class="navbar__inner">
 
       <RouterLink to="/" class="navbar__logo" @click="closeMenu">
@@ -75,8 +75,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+
+const route = useRoute()
+const isDetailPage = computed(() => route.path.startsWith('/work/'))
 
 const navRef        = ref(null)
 const isScrolled    = ref(false)
@@ -130,6 +133,9 @@ const closeMenu = () => {
   menuOpen.value = false
   document.body.style.overflow = ''
 }
+
+// Close menu automatically when navigating away from home
+watch(isDetailPage, (val) => { if (val) closeMenu() })
 
 onMounted(()  => window.addEventListener('scroll', handleScroll, { passive: true }))
 onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document.body.style.overflow = '' })
