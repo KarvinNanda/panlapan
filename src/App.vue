@@ -31,11 +31,14 @@ useLenis()
 
 const route = useRoute()
 
-// On every route change: scroll to top + refresh ScrollTriggers
+// On every route change: kill stale triggers → scroll to top → refresh after new page mounts
 watch(() => route.path, (newPath, oldPath) => {
-  if (!oldPath) return  // skip initial navigation
+  if (!oldPath) return
+  // Kill synchronously BEFORE Vue updates DOM (before new page components mount)
+  ScrollTrigger.getAll().forEach(t => t.kill())
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  setTimeout(() => ScrollTrigger.refresh(), 120)
+  // Wait for leave transition (280ms) + component mount before refresh
+  setTimeout(() => ScrollTrigger.refresh(), 500)
 })
 </script>
 

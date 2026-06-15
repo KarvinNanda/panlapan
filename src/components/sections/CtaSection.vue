@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
@@ -44,23 +44,28 @@ const textRef    = ref(null)
 const bandRef    = ref(null)
 const ctaBtnRef  = ref(null)
 
+let ctx = null
+
 onMounted(() => {
   magnet(ctaBtnRef.value)
 
-  gsap.fromTo(
-    textRef.value?.querySelectorAll('.cta__headline, .cta__body, .cta__impact'),
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
-      scrollTrigger: { trigger: textRef.value, start: 'top 80%' } }
-  )
-
-  gsap.fromTo(
-    ctaBtnRef.value,
-    { opacity: 0, y: 25 },
-    { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-      scrollTrigger: { trigger: bandRef.value, start: 'top 85%' } }
-  )
+  ctx = gsap.context(() => {
+    gsap.fromTo(
+      textRef.value?.querySelectorAll('.cta__headline, .cta__body, .cta__impact'),
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: textRef.value, start: 'top 80%' } }
+    )
+    gsap.fromTo(
+      ctaBtnRef.value,
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: bandRef.value, start: 'top 85%' } }
+    )
+  })
 })
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

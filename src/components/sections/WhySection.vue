@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -52,30 +52,48 @@ const headerRef  = ref(null)
 const zigzagRef  = ref(null)
 const bandRef    = ref(null)
 
+let ctx = null
+
 onMounted(() => {
-  gsap.fromTo(
-    headerRef.value?.querySelectorAll('.why__title, .why__subtitle'),
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
-      scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-  )
-
-  const qaItems = zigzagRef.value?.querySelectorAll('.why__qa')
-  if (qaItems?.length) {
-    gsap.fromTo(qaItems,
-      { opacity: 0, y: 25 },
-      { opacity: 1, y: 0, stagger: 0.2, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: zigzagRef.value, start: 'top 80%' } }
+  ctx = gsap.context(() => {
+    gsap.fromTo(
+      headerRef.value?.querySelectorAll('.why__title, .why__subtitle'),
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
     )
-  }
 
-  gsap.fromTo(
-    bandRef.value?.querySelector('.why__manifesto'),
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
-      scrollTrigger: { trigger: bandRef.value, start: 'top 80%' } }
-  )
+    // Q&A: left block slides from left, right block from right
+    const leftQ  = zigzagRef.value?.querySelector('.why__qa--left')
+    const rightQ = zigzagRef.value?.querySelector('.why__qa--right')
+    if (leftQ) {
+      gsap.fromTo(leftQ,
+        { opacity: 0, x: -50 },
+        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: zigzagRef.value, start: 'top 82%' } }
+      )
+    }
+    if (rightQ) {
+      gsap.fromTo(rightQ,
+        { opacity: 0, x: 50 },
+        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: 0.18,
+          scrollTrigger: { trigger: zigzagRef.value, start: 'top 82%' } }
+      )
+    }
+
+    // Manifesto: word-by-word stagger
+    const manifesto = bandRef.value?.querySelector('.why__manifesto')
+    if (manifesto) {
+      gsap.fromTo(manifesto,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out',
+          scrollTrigger: { trigger: bandRef.value, start: 'top 75%' } }
+      )
+    }
+  })
 })
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

@@ -1,239 +1,209 @@
 <template>
-  <main class="work-detail" v-if="project">
+  <!-- Single root element required for <Transition> in App.vue -->
+  <main :class="project ? 'work-detail' : 'work-detail work-detail--404'">
+
+    <!-- Scroll progress bar (only on real project page) -->
+    <div class="work-detail__progress" ref="progressRef" v-if="project" />
+
+    <!-- ── Project page ── -->
+    <template v-if="project">
+
     <!-- Back navigation -->
     <div class="work-detail__back-wrap" ref="backRef">
-      <RouterLink to="/" class="work-detail__back" data-cursor-hover>
+      <a href="/" class="work-detail__back">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M13 7H1M1 7L7 13M1 7L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span>Back to Work</span>
-      </RouterLink>
+        <span>Back</span>
+      </a>
     </div>
 
-    <!-- Hero -->
-    <section class="work-detail__hero" ref="heroRef">
-      <div class="work-detail__hero-inner">
-        <div class="work-detail__meta" ref="metaRef">
-          <span class="eyebrow">{{ project.industry }}</span>
-          <span class="work-detail__meta-sep">·</span>
-          <span class="eyebrow">{{ project.year }}</span>
-        </div>
-        <!-- Title + Logo -->
-        <div class="work-detail__title-row">
-          <h1 class="work-detail__title" ref="titleRef">{{ project.title }}</h1>
-          <img
-            v-if="project.logo"
-            :src="project.logo"
-            :alt="`${project.title} logo`"
-            class="work-detail__logo"
-          />
-        </div>
+    <!-- Header: Logo + Title + Description + Meta -->
+    <section class="work-detail__header" ref="headerRef">
 
-        <p class="work-detail__client eyebrow" ref="clientRef">{{ project.client }}</p>
+      <!-- Logo + Title row -->
+      <div class="work-detail__title-row">
+        <img
+          v-if="project.logo"
+          :src="project.logo"
+          :alt="`${project.title} logo`"
+          class="work-detail__logo"
+        />
+        <h1 class="work-detail__title">{{ project.title }}</h1>
       </div>
 
-      <!-- Tags -->
-      <div class="work-detail__tags" ref="tagsRef">
-        <span v-for="tag in project.tags" :key="tag" class="work-detail__tag">
-          {{ tag }}
-        </span>
+      <!-- Full description -->
+      <div class="work-detail__desc" ref="descRef">
+        <p v-for="(para, i) in descParagraphs" :key="i">{{ para }}</p>
+      </div>
+
+      <!-- Category + Publisher row -->
+      <div class="work-detail__meta" ref="metaRef">
+        <div class="work-detail__meta-item">
+          <span class="work-detail__meta-label">Category</span>
+          <span class="work-detail__meta-value">{{ project.industry }}</span>
+        </div>
+        <div class="work-detail__meta-item">
+          <span class="work-detail__meta-label">Publisher</span>
+          <span class="work-detail__meta-value">{{ project.year }}</span>
+        </div>
       </div>
     </section>
 
-    <!-- Cover image -->
-    <!-- <section class="work-detail__cover" ref="coverRef">
-      <div class="work-detail__cover-img-wrap">
+    <!-- Images stacked full-width -->
+    <section class="work-detail__gallery" ref="galleryRef" v-if="project.images?.length">
+      <div
+        v-for="(img, i) in project.images"
+        :key="i"
+        class="work-detail__img-wrap"
+      >
         <img
-          :src="project.coverImage || project.thumbnail"
-          :alt="project.title"
-          class="work-detail__cover-img"
-          loading="eager"
+          :src="img"
+          :alt="`${project.title} — Image ${i + 1}`"
+          class="work-detail__image"
+          loading="lazy"
         />
       </div>
-    </section> -->
-
-    <!-- Content -->
-    <section class="work-detail__content">
-      <div class="work-detail__content-inner">
-        <!-- Description -->
-        <div class="work-detail__description" ref="descRef">
-          <span class="eyebrow">Overview</span>
-          <p class="work-detail__desc-text">{{ project.description }}</p>
-          <p class="work-detail__desc-full">{{ project.fullDescription }}</p>
-        </div>
-
-        <!-- Deliverables sidebar -->
-        <div class="work-detail__sidebar" ref="sidebarRef">
-          <span class="eyebrow">Deliverables</span>
-          <ul class="work-detail__deliverables">
-            <li v-for="item in project.deliverables" :key="item" class="work-detail__deliverable">
-              <span class="work-detail__deliverable-dot" />
-              {{ item }}
-            </li>
-          </ul>
-        </div>
-      </div>
     </section>
 
-    <!-- Project images gallery -->
-    <section class="work-detail__gallery" ref="galleryRef" v-if="project.images?.length">
-      <div class="work-detail__gallery-grid">
-        <div
-          v-for="(img, i) in project.images"
-          :key="i"
-          class="work-detail__gallery-item"
-          :class="{ 'work-detail__gallery-img': i === 0 }"
-        >
-          <img
-            :src="img"
-            :alt="`${project.title} — Image ${i + 1}`"
-            class="work-detail__gallery-img"
-            loading="lazy"
-          />
-        </div>
+    </template>
+    <!-- ── 404 state ── -->
+    <template v-else>
+      <div class="work-detail__404">
+        <h1>Project not found</h1>
+        <RouterLink to="/" class="btn-primary">Back to Home</RouterLink>
       </div>
-    </section>
+    </template>
 
-    <!-- Next project / CTA -->
-    <section class="work-detail__bottom">
-      <div class="divider" />
-      <div class="work-detail__cta">
-        <p class="work-detail__cta-label eyebrow">Ready to build something great?</p>
-        <RouterLink to="/#connect" class="btn-primary" data-cursor-hover>
-          Start a Project
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </RouterLink>
-      </div>
-    </section>
-  </main>
-
-  <!-- 404 state -->
-  <main class="work-detail work-detail--404" v-else>
-    <div class="work-detail__404">
-      <h1>Project not found</h1>
-      <RouterLink to="/" class="btn-primary">Back to Home</RouterLink>
-    </div>
   </main>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getProjectBySlug } from '@/data/projects.js'
-import { useParallax } from '@/composables/useParallax.js'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const { parallax } = useParallax()
 
 const route = useRoute()
 const project = computed(() => getProjectBySlug(route.params.slug))
 
-const backRef = ref(null)
-const heroRef = ref(null)
-const metaRef = ref(null)
-const titleRef = ref(null)
-const clientRef = ref(null)
-const tagsRef = ref(null)
-const coverRef = ref(null)
-const descRef = ref(null)
-const sidebarRef = ref(null)
-const galleryRef = ref(null)
+const descParagraphs = computed(() => {
+  const text = project.value?.fullDescription || project.value?.description || ''
+  return text.split(/\n\n+/).filter(Boolean)
+})
 
-onMounted(() => {
+const progressRef = ref(null)
+const backRef     = ref(null)
+const headerRef   = ref(null)
+const descRef     = ref(null)
+const metaRef     = ref(null)
+const galleryRef  = ref(null)
+
+let ctx = null
+let onScroll = null
+
+onMounted(async () => {
+  await nextTick()
+
+  // Scroll progress bar
+  if (project.value) {
+    onScroll = () => {
+      if (!progressRef.value) return
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      progressRef.value.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+  }
+
   if (!project.value) return
 
-  // Entrance sequence
-  const tl = gsap.timeline({ delay: 0.1 })
+  ctx = gsap.context(() => {
+    const tl = gsap.timeline({ delay: 0.1 })
 
-  tl.fromTo(backRef.value,
-    { opacity: 0, x: -20 },
-    { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' }
-  )
-
-  tl.fromTo(metaRef.value,
-    { opacity: 0, y: 15 },
-    { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
-    '-=0.3'
-  )
-
-  tl.fromTo(titleRef.value,
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, duration: 0.9, ease: 'power4.out' },
-    '-=0.3'
-  )
-
-  tl.fromTo('.work-detail__logo',
-    { opacity: 0, scale: 0.8 },
-    { opacity: 0.9, scale: 1, duration: 0.6, ease: 'power3.out' },
-    '-=0.6'
-  )
-
-  tl.fromTo([clientRef.value, tagsRef.value],
-    { opacity: 0, y: 20 },
-    { opacity: 1, y: 0, stagger: 0.1, duration: 0.7, ease: 'power3.out' },
-    '-=0.4'
-  )
-
-  // Cover — parallax + clip reveal
-  gsap.fromTo('.work-detail__cover-img',
-    { scale: 1.15 },
-    {
-      scale: 1,
-      duration: 1.6,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: coverRef.value, start: 'top 80%' }
+    if (backRef.value) {
+      tl.fromTo(backRef.value,
+        { opacity: 0, x: -16 },
+        { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }
+      )
     }
-  )
 
-  gsap.fromTo('.work-detail__cover-img-wrap',
-    { clipPath: 'inset(100% 0 0 0)' },
-    {
-      clipPath: 'inset(0% 0 0 0)',
-      duration: 1.2,
-      ease: 'power4.inOut',
-      scrollTrigger: { trigger: coverRef.value, start: 'top 80%' }
-    }
-  )
-
-  // Parallax cover as you scroll
-  parallax('.work-detail__cover-img', 0.12, { trigger: coverRef.value })
-
-  // Content reveal
-  gsap.fromTo([descRef.value, sidebarRef.value],
-    { opacity: 0, y: 30 },
-    {
-      opacity: 1, y: 0,
-      stagger: 0.15,
-      duration: 0.9,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: descRef.value, start: 'top 80%' }
-    }
-  )
-
-  // Gallery items — cascade reveal with rotation
-  const galleryItems = document.querySelectorAll('.work-detail__gallery-item')
-  if (galleryItems.length) {
-    gsap.fromTo(galleryItems,
-      { opacity: 0, y: 60, rotation: 1.5 },
-      {
-        opacity: 1, y: 0, rotation: 0,
-        stagger: { amount: 0.6, from: 'start' },
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: galleryRef.value, start: 'top 80%' }
+    const titleRow = headerRef.value?.querySelector('.work-detail__title-row')
+    if (titleRow) {
+      const logo = titleRow.querySelector('.work-detail__logo')
+      const title = titleRow.querySelector('.work-detail__title')
+      if (logo) {
+        tl.fromTo(logo,
+          { opacity: 0, scale: 0.7 },
+          { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)' },
+          '-=0.1'
+        )
       }
-    )
-  }
+      if (title) {
+        tl.fromTo(title,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' },
+          '-=0.4'
+        )
+      }
+    }
+
+    if (descRef.value) {
+      gsap.fromTo(descRef.value,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: descRef.value, start: 'top 88%' } }
+      )
+    }
+
+    if (metaRef.value) {
+      gsap.fromTo(metaRef.value,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+          scrollTrigger: { trigger: metaRef.value, start: 'top 90%' } }
+      )
+    }
+
+    const wraps = galleryRef.value?.querySelectorAll('.work-detail__img-wrap')
+    if (wraps?.length) {
+      wraps.forEach((wrap) => {
+        gsap.fromTo(wrap,
+          { clipPath: 'inset(100% 0 0 0)' },
+          {
+            clipPath: 'inset(0% 0 0 0)',
+            duration: 1.1,
+            ease: 'power4.inOut',
+            scrollTrigger: { trigger: wrap, start: 'top 92%' }
+          }
+        )
+      })
+    }
+  })
+})
+
+onUnmounted(() => {
+  if (onScroll) window.removeEventListener('scroll', onScroll)
+  ctx?.revert()
 })
 </script>
 
 <style scoped>
-/* Entire page — off-white background */
+/* Scroll progress bar */
+.work-detail__progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #E73121;
+  transform-origin: left center;
+  transform: scaleX(0);
+  z-index: 200;
+  pointer-events: none;
+}
+
 .work-detail {
   padding-top: 6rem;
   background: var(--color-off-white);
@@ -267,31 +237,31 @@ onMounted(() => {
 
 .work-detail__back:hover { color: var(--color-text-dark); }
 
-/* Hero */
-.work-detail__hero {
-  padding: 3rem 2rem 2rem;
+.work-detail__back svg {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.work-detail__back:hover svg { transform: translateX(-5px); }
+
+/* Header section */
+.work-detail__header {
+  padding: 1.5rem 2rem 3rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.work-detail__hero-inner { margin-bottom: 2rem; }
-
-.work-detail__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-.work-detail__meta .eyebrow { color: var(--color-text-dark-35); }
-
-.work-detail__meta-sep { color: rgba(17,17,17,0.2); }
-
+/* Logo + Title */
 .work-detail__title-row {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 1rem;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.work-detail__logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .work-detail__title {
@@ -300,187 +270,83 @@ onMounted(() => {
   letter-spacing: -0.03em;
   line-height: 0.95;
   color: var(--color-text-dark);
-  margin-bottom: 0;
 }
 
-.work-detail__logo {
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-  flex-shrink: 0;
-  filter: invert(1);
-  opacity: 0.85;
-}
-
-.work-detail__client { color: var(--color-text-dark-35); }
-
-/* Tags */
-.work-detail__tags {
+/* Description */
+.work-detail__desc {
+  margin-bottom: 3rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.work-detail__tag {
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.work-detail__desc p {
+  font-size: clamp(0.88rem, 1.4vw, 1rem);
+  line-height: 1.85;
   color: var(--color-text-dark-60);
-  padding: 0.35rem 0.9rem;
-  border: 1px solid var(--color-border-dark);
-  border-radius: 100px;
+  max-width: 700px;
 }
 
-/* Cover */
-.work-detail__cover {
-  padding: 2rem;
+/* Category / Publisher */
+.work-detail__meta {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border-dark);
+}
+
+.work-detail__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.work-detail__meta-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(17, 17, 17, 0.35);
+}
+
+.work-detail__meta-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+/* Gallery — stacked full-width */
+.work-detail__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem 2rem 4rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.work-detail__cover-img-wrap {
+.work-detail__img-wrap {
   overflow: hidden;
   border-radius: 8px;
-  aspect-ratio: 16 / 9;
-  background: rgba(17,17,17,0.06);
 }
 
-.work-detail__cover-img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-
-/* Content */
-.work-detail__content {
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.work-detail__content-inner {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 5rem;
-}
-
-.work-detail__description {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.work-detail__description .eyebrow { color: var(--color-text-dark-35); }
-
-.work-detail__desc-text {
-  font-size: 1.2rem;
-  line-height: 1.7;
-  color: var(--color-text-dark);
-  font-weight: 400;
-}
-
-.work-detail__desc-full {
-  font-size: 0.9rem;
-  line-height: 1.9;
-  color: var(--color-text-dark-60);
-  white-space: pre-line;
-}
-
-.work-detail__sidebar { padding-top: 2rem; }
-
-.work-detail__sidebar .eyebrow { color: var(--color-text-dark-35); }
-
-.work-detail__deliverables {
-  list-style: none;
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.work-detail__deliverable {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8rem;
-  color: var(--color-text-dark-60);
-  letter-spacing: 0.05em;
-}
-
-.work-detail__deliverable-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(17,17,17,0.3);
-  flex-shrink: 0;
-}
-
-/* Gallery */
-.work-detail__gallery {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.work-detail__gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.work-detail__gallery-item--wide { grid-column: 1 / -1; }
-
-.work-detail__gallery-img {
+.work-detail__image {
   width: 100%;
   height: auto;
-  object-fit: fill;
-  border-radius: 6px;
-  aspect-ratio: 4/3;
   display: block;
+  transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.work-detail__gallery-item--wide .work-detail__gallery-img {
-  aspect-ratio: 16/7;
+.work-detail__img-wrap:hover .work-detail__image {
+  transform: scale(1.03);
 }
 
-/* Bottom CTA */
-.work-detail__bottom {
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.work-detail__bottom .divider { background: var(--color-border-dark); }
-
-.work-detail__cta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 3rem;
-  gap: 2rem;
-}
-
-.work-detail__cta-label {
-  font-size: 1rem;
-  color: var(--color-text-dark-60);
-}
-
-.work-detail__cta .btn-primary {
-  background: var(--color-text-dark);
-  color: var(--color-off-white);
-}
-
-.work-detail__cta .btn-primary:hover {
-  background: rgba(17,17,17,0.85);
-}
-
-/* 404 state */
+/* 404 — overrides the gradient when project not found */
 .work-detail--404 {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100dvh;
-  background: var(--color-off-white);
+  background-image: none;
+  padding-top: 0;
 }
 
 .work-detail__404 {
@@ -492,13 +358,11 @@ onMounted(() => {
   color: var(--color-text-dark);
 }
 
-@media (max-width: 1024px) {
-  .work-detail__content-inner { grid-template-columns: 1fr; gap: 3rem; }
-}
-
 @media (max-width: 768px) {
-  .work-detail__gallery-grid      { grid-template-columns: 1fr; }
-  .work-detail__gallery-item--wide { grid-column: 1; }
-  .work-detail__cta               { flex-direction: column; align-items: flex-start; }
+  .work-detail__header  { padding: 1rem 1.5rem 2.5rem; }
+  .work-detail__gallery { padding: 0 1.5rem 3rem; gap: 0.75rem; }
+  .work-detail__title-row { gap: 0.9rem; }
+  .work-detail__logo    { width: 36px; height: 36px; }
+  .work-detail__meta    { gap: 2.5rem; }
 }
 </style>

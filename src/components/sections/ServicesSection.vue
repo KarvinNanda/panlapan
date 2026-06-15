@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
@@ -93,29 +93,35 @@ const services = [
   }
 ]
 
+let ctx = null
+
 onMounted(() => {
   magnet(footerBtnRef.value)
 
-  gsap.fromTo(
-    headerRef.value?.querySelectorAll('h2, .eyebrow'),
-    { opacity: 0, y: 25 },
-    { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-      scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-  )
-  gsap.fromTo(dividerRef.value,
-    { scaleX: 0, transformOrigin: 'left' },
-    { scaleX: 1, duration: 1.2, ease: 'power4.inOut',
-      scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
-  )
-  const items = gridRef.value?.querySelectorAll('.service-item')
-  if (items?.length) {
-    gsap.fromTo(items,
-      { opacity: 0, y: 30 },
+  ctx = gsap.context(() => {
+    gsap.fromTo(
+      headerRef.value?.querySelectorAll('h2, .eyebrow'),
+      { opacity: 0, y: 25 },
       { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: gridRef.value, start: 'top 80%' } }
+        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
     )
-  }
+    gsap.fromTo(dividerRef.value,
+      { scaleX: 0, transformOrigin: 'left' },
+      { scaleX: 1, duration: 1.2, ease: 'power4.inOut',
+        scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
+    )
+    const items = gridRef.value?.querySelectorAll('.service-item')
+    if (items?.length) {
+      gsap.fromTo(items,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: gridRef.value, start: 'top 80%' } }
+      )
+    }
+  })
 })
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>
@@ -140,6 +146,7 @@ onMounted(() => {
   letter-spacing: -0.03em;
   line-height: 1;
   text-transform: uppercase;
+  color: #E73121;
 }
 
 .services__what { flex-shrink: 0; }

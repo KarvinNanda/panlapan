@@ -57,27 +57,64 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
+
+const heroRef     = ref(null)
 const wordmarkRef = ref(null)
 const headlineRef = ref(null)
 
+let ctx = null
+
 onMounted(() => {
-  const lines = headlineRef.value?.querySelectorAll('.hero__line')
+  ctx = gsap.context(() => {
+    const lines = headlineRef.value?.querySelectorAll('.hero__line')
+    const tl = gsap.timeline({ delay: 0.1 })
 
-  const tl = gsap.timeline({ delay: 0.1 })
+    if (wordmarkRef.value) {
+      gsap.set(wordmarkRef.value, { opacity: 0 })
+      tl.to(wordmarkRef.value, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0)
+    }
 
-  if (wordmarkRef.value) {
-    gsap.set(wordmarkRef.value, { opacity: 0 })
-    tl.to(wordmarkRef.value, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0)
-  }
+    if (lines?.length) {
+      gsap.set(lines, { y: '110%', opacity: 0 })
+      tl.to(lines, { y: '0%', opacity: 1, duration: 1, stagger: 0.08, ease: 'power4.out' }, 0.3)
+    }
 
-  if (lines?.length) {
-    gsap.set(lines, { y: '110%', opacity: 0 })
-    tl.to(lines, { y: '0%', opacity: 1, duration: 1, stagger: 0.08, ease: 'power4.out' }, 0.3)
-  }
+    // Scroll parallax — wordmark drifts up as you scroll away from hero
+    if (heroRef.value && wordmarkRef.value) {
+      gsap.to(wordmarkRef.value, {
+        yPercent: 28,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.value,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        }
+      })
+    }
+
+    // Headline lines also drift slightly on scroll
+    if (heroRef.value && lines?.length) {
+      gsap.to(lines, {
+        yPercent: 12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.value,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.4,
+        }
+      })
+    }
+  })
 })
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

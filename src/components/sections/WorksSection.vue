@@ -140,25 +140,30 @@ onMounted(() => {
 
   magnet(footerBtnRef.value)
 
-  gsap.fromTo(
-    headerRef.value?.querySelectorAll('h2, p, a'),
-    { opacity: 0, y: 30 },
-    { opacity: 1, y: 0, stagger: 0.1, duration: 0.9, ease: 'power3.out',
-      scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-  )
-
-  const cards = listRef.value?.querySelectorAll('.works__card')
-  if (cards?.length) {
-    gsap.fromTo(cards,
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, stagger: 0.12, duration: 0.85, ease: 'power3.out',
-        scrollTrigger: { trigger: listRef.value, start: 'top 82%' } }
+  gsapCtx = gsap.context(() => {
+    gsap.fromTo(
+      headerRef.value?.querySelectorAll('h2, p, a'),
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, stagger: 0.1, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
     )
-  }
+
+    const cards = listRef.value?.querySelectorAll('.works__card')
+    if (cards?.length) {
+      gsap.fromTo(cards,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, stagger: 0.12, duration: 0.85, ease: 'power3.out',
+          scrollTrigger: { trigger: listRef.value, start: 'top 82%' } }
+      )
+    }
+  })
 })
+
+let gsapCtx = null
 
 onUnmounted(() => {
   timers.forEach(t => clearInterval(t))
+  gsapCtx?.revert()
 })
 </script>
 
@@ -353,6 +358,12 @@ onUnmounted(() => {
   height: 100%;
   object-fit: fill;
   display: block;
+  transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Hover: scale image, lift card body */
+.works__card:hover .works__card-slide.is-active .works__card-img {
+  transform: scale(1.06) !important; /* override kenBurns end state */
 }
 
 /* Progress bar */

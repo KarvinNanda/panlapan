@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -80,23 +80,29 @@ const steps = [
   }
 ]
 
-onMounted(() => {
-  gsap.fromTo(
-    headerRef.value?.querySelector('h2'),
-    { opacity: 0, y: 25 },
-    { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-      scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-  )
+let ctx = null
 
-  const stepEls = stepsRef.value?.querySelectorAll('.approach__step')
-  if (stepEls?.length) {
-    gsap.fromTo(stepEls,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.12, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: stepsRef.value, start: 'top 78%' } }
+onMounted(() => {
+  ctx = gsap.context(() => {
+    gsap.fromTo(
+      headerRef.value?.querySelector('h2'),
+      { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
     )
-  }
+
+    const stepEls = stepsRef.value?.querySelectorAll('.approach__step')
+    if (stepEls?.length) {
+      gsap.fromTo(stepEls,
+        { opacity: 0, x: -40, y: 8 },
+        { opacity: 1, x: 0, y: 0, stagger: 0.13, duration: 0.85, ease: 'power3.out',
+          scrollTrigger: { trigger: stepsRef.value, start: 'top 78%' } }
+      )
+    }
+  })
 })
+
+onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

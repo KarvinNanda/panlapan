@@ -45,6 +45,10 @@
       </button>
     </div>
 
+  </header>
+
+  <!-- Teleport to body — avoids backdrop-filter containing-block issue -->
+  <Teleport to="body">
     <Transition name="mobile-menu">
       <div v-if="menuOpen" class="mobile-menu">
         <nav class="mobile-menu__links">
@@ -67,7 +71,7 @@
         </div>
       </div>
     </Transition>
-  </header>
+  </Teleport>
 </template>
 
 <script setup>
@@ -137,7 +141,7 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 300; /* must be above mobile-menu (250) so X button stays clickable */
   padding: 1.5rem 2rem;
   background: rgba(0, 0, 0);
   backdrop-filter: blur(6px);
@@ -243,7 +247,6 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   border: none;
   padding: 0.5rem;
   cursor: none;
-  z-index: 110;
 }
 
 .navbar__hamburger span {
@@ -262,7 +265,7 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   position: fixed;
   inset: 0;
   background: var(--color-black);
-  z-index: 105;
+  z-index: 250; /* below navbar (300) so X button stays clickable */
   display: flex;
   flex-direction: column;
   justify-content: center;
