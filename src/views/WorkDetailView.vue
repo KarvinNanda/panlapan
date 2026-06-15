@@ -82,7 +82,7 @@
           v-for="(img, i) in project.images"
           :key="i"
           class="work-detail__gallery-item"
-          :class="{ 'work-detail__gallery-item--wide': i === 0 }"
+          :class="{ 'work-detail__gallery-img': i === 0 }"
         >
           <img
             :src="img"
