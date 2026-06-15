@@ -23,22 +23,23 @@
   --color-text-dark-35: rgba(17, 17, 17, 0.35);
   --color-border-dark: rgba(17, 17, 17, 0.10);
 
+  /* SATU-SATUNYA font yang dipakai di seluruh project */
   --font-primary: "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
 
-  /* Spacing scale */
   --section-padding: 7rem 2rem;
   --section-padding-mobile: 5rem 1.5rem;
-
-  /* Transitions */
   --transition-base: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --transition-slow: 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* ===== RESET & BASE ===== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: var(--font-primary) !important;
 }
 
 html {
@@ -184,7 +185,7 @@ html.lenis {
 /* ===== EYEBROW LABEL ===== */
 .eyebrow {
   font-size: 0.65rem;
-  letter-spacing: 0.25em;
+  /* letter-spacing: 0.25em; */
   text-transform: uppercase;
   color: var(--color-white-60);
   font-weight: 400;

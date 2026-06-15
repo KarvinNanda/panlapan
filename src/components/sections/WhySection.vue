@@ -1,193 +1,204 @@
 <template>
   <section id="about" class="why section" ref="sectionRef">
     <div class="why__inner">
-      <!-- Eyebrow -->
-      <span class="eyebrow" ref="eyebrowRef">Why Panlapan</span>
 
-      <!-- Big statement -->
-      <div class="why__statement" ref="statementRef">
-        <h2 class="why__headline">
+      <!-- Header -->
+      <div class="why__header" ref="headerRef">
+        <h2 class="why__title">Why panlapan</h2>
+        <p class="why__subtitle">
           Strategy First.<br>
-          <span class="why__headline--italic">Creativity Second.</span>
-        </h2>
+          Creativity Second.
+        </p>
       </div>
 
-      <!-- Content split -->
-      <div class="why__content" ref="contentRef">
-        <div class="why__col why__col--left">
-          <div class="why__question">
-            <span class="eyebrow why__q-label">Most agencies ask:</span>
-            <p class="why__q-text">"What do you want us to create?"</p>
-          </div>
-          <div class="why__question why__question--ours">
-            <span class="eyebrow why__q-label">We ask:</span>
-            <p class="why__q-text why__q-text--accent">"What business outcome are you trying to achieve?"</p>
-          </div>
+      <!-- Zig-zag Q&A -->
+      <div class="why__zigzag" ref="zigzagRef">
+        <div class="why__qa why__qa--left">
+          <span class="why__qa-label">Most agencies ask:</span>
+          <p class="why__qa-text">"What do you want us to create?"</p>
         </div>
+        <div class="why__qa why__qa--right">
+          <span class="why__qa-label">We ask:</span>
+          <p class="why__qa-text why__qa-text--ours">"What business outcome are you trying to achieve?"</p>
+        </div>
+      </div>
 
-        <div class="why__col why__col--right">
-          <p class="why__manifesto">
-            Because great creative work is not measured by how it looks.
-            <em>It's measured by what it accomplishes.</em>
-          </p>
-          <RouterLink to="/#connect" class="btn-primary why__cta" data-cursor-hover>
-            Work With Us
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </RouterLink>
-        </div>
+    </div>
+
+    <!-- Full-width gradient manifesto band -->
+    <div class="why__band" ref="bandRef">
+      <div class="why__band-inner">
+        <p class="why__manifesto">
+          Because great creative work<br>
+          is not measured by how it looks.<br>
+          It's measured<br>
+          by what it accomplishes.
+        </p>
       </div>
     </div>
+
   </section>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionRef = ref(null)
-const eyebrowRef = ref(null)
-const statementRef = ref(null)
-const contentRef = ref(null)
+const headerRef  = ref(null)
+const zigzagRef  = ref(null)
+const bandRef    = ref(null)
 
 onMounted(() => {
-  // Eyebrow
-  gsap.fromTo(eyebrowRef.value,
-    { opacity: 0, y: 20 },
-    {
-      opacity: 1, y: 0,
-      duration: 0.7,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: eyebrowRef.value, start: 'top 85%' }
-    }
-  )
-
-  // Headline
-  const lines = statementRef.value?.querySelectorAll('h2 > *')
-  gsap.fromTo(statementRef.value,
-    { opacity: 0, y: 40 },
-    {
-      opacity: 1, y: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: statementRef.value, start: 'top 80%' }
-    }
-  )
-
-  // Content columns
-  const cols = contentRef.value?.querySelectorAll('.why__col')
-  gsap.fromTo(cols,
+  gsap.fromTo(
+    headerRef.value?.querySelectorAll('.why__title, .why__subtitle'),
     { opacity: 0, y: 30 },
-    {
-      opacity: 1, y: 0,
-      stagger: 0.15,
-      duration: 0.9,
-      ease: 'power3.out',
-      scrollTrigger: { trigger: contentRef.value, start: 'top 80%' }
-    }
+    { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
+  )
+
+  const qaItems = zigzagRef.value?.querySelectorAll('.why__qa')
+  if (qaItems?.length) {
+    gsap.fromTo(qaItems,
+      { opacity: 0, y: 25 },
+      { opacity: 1, y: 0, stagger: 0.2, duration: 0.85, ease: 'power3.out',
+        scrollTrigger: { trigger: zigzagRef.value, start: 'top 80%' } }
+    )
+  }
+
+  gsap.fromTo(
+    bandRef.value?.querySelector('.why__manifesto'),
+    { opacity: 0, y: 30 },
+    { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: bandRef.value, start: 'top 80%' } }
   )
 })
 </script>
 
 <style scoped>
+/* ── BASE ── */
 .why {
-  padding: 7rem 2rem;
+  background: var(--color-black);
   overflow: hidden;
+  padding: 0;
 }
 
 .why__inner {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 7rem 2rem 5rem;
 }
 
-.why__statement {
-  margin: 1.5rem 0 5rem;
+/* ── Header ── */
+.why__header {
+  margin-bottom: 5rem;
 }
 
-.why__headline {
-  font-size: clamp(2.8rem, 6vw, 7rem);
+.why__title {
+  font-size: clamp(1.6rem, 10vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-white);
+  text-transform: lowercase;
+  line-height: 1;
+  margin-bottom: 1.25rem;
+}
+
+.why__subtitle {
+  font-size: clamp(2.4rem, 3.5vw, 5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-.why__headline--italic {
-  font-style: italic;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-/* Content split */
-.why__content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding-top: 3rem;
-}
-
-/* Questions */
-.why__col--left {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.why__q-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.why__q-text {
-  font-size: clamp(1rem, 2vw, 1.4rem);
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.45);
-  font-style: italic;
-  line-height: 1.4;
-}
-
-.why__question--ours .why__q-label {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.why__q-text--accent {
+  line-height: 1.1;
   color: var(--color-white);
-  font-weight: 700;
-  font-style: normal;
 }
 
-/* Right col */
-.why__col--right {
+/* ── Zig-zag Q&A ── */
+.why__zigzag {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 3.5rem;
+}
+
+.why__qa {
+  display: flex;
+  flex-direction: column;
+  /* gap: 0.4rem; */
+  max-width: 60%;
+}
+
+.why__qa--right {
+  align-self: flex-end;
+  text-align: right;
+}
+
+
+/* ── Gradient band ── */
+.why__band {
+  width: 100%;
+  background: linear-gradient(
+    to bottom,
+    #000000 0%,
+    #E73121 50%,
+    #E73121 50%,
+    #000000 100%
+  );
+  padding: 7rem 2rem;
+  margin-top: -5rem;
+}
+
+.why__band-inner {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .why__manifesto {
-  font-size: clamp(1rem, 1.8vw, 1.3rem);
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 2.5rem;
-}
-
-.why__manifesto em {
-  font-style: italic;
+  font-size: clamp(1.5rem, 3.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.35;
   color: var(--color-white);
+  letter-spacing: -0.02em;
 }
 
+/* ── TABLET ── */
+@media (max-width: 1024px) {
+  .why__qa { max-width: 65%; }
+}
+
+/* ── MOBILE ── */
 @media (max-width: 768px) {
-  .why {
-    padding: 5rem 1.5rem;
+  .why__inner {
+    padding: 5rem 1.5rem 4rem;
   }
 
-  .why__content {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+  .why__header {
+    margin-bottom: 3.5rem;
+  }
+
+  .why__title {
+    font-size: clamp(1.3rem, 10vw, 3rem);
+    margin-bottom: 1rem;
+  }
+
+  .why__subtitle {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .why__zigzag {
+    gap: 2.5rem;
+  }
+
+  .why__qa { max-width: 72%; }
+
+  .why__band {
+    padding: 5rem 1.5rem;
+    margin-top: -3.5rem;
+  }
+
+  .why__manifesto {
+    font-size: clamp(1.2rem, 5.5vw, 1.8rem);
   }
 }
 </style>

@@ -8,12 +8,7 @@
 
     <!-- Page transition wrapper -->
     <RouterView v-slot="{ Component, route }">
-      <Transition
-        :name="route.meta.transition || 'wipe'"
-        mode="out-in"
-        @enter="onEnter"
-        @leave="onLeave"
-      >
+      <Transition name="page" mode="out-in">
         <component :is="Component" :key="route.path" />
       </Transition>
     </RouterView>
@@ -26,7 +21,6 @@
 <script setup>
 import { watch } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
-import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import TheNavbar from '@/components/layout/TheNavbar.vue'
@@ -37,34 +31,12 @@ useLenis()
 
 const route = useRoute()
 
-// On every route change: scroll to top + refresh stale ScrollTriggers
-watch(() => route.path, () => {
+// On every route change: scroll to top + refresh ScrollTriggers
+watch(() => route.path, (newPath, oldPath) => {
+  if (!oldPath) return  // skip initial navigation
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  setTimeout(() => {
-    ScrollTrigger.refresh()
-  }, 100)
+  setTimeout(() => ScrollTrigger.refresh(), 120)
 })
-
-const onLeave = (el, done) => {
-  gsap.to(el, {
-    clipPath: 'inset(0 0 100% 0)',
-    duration: 0.6,
-    ease: 'power4.inOut',
-    onComplete: done
-  })
-}
-
-const onEnter = (el, done) => {
-  gsap.fromTo(el,
-    { clipPath: 'inset(100% 0 0% 0)', opacity: 1 },
-    {
-      clipPath: 'inset(0% 0 0% 0)',
-      duration: 0.7,
-      ease: 'power4.out',
-      onComplete: done
-    }
-  )
-}
 </script>
 
 <style>
@@ -74,10 +46,19 @@ const onEnter = (el, done) => {
   min-height: 100dvh;
 }
 
-/* Cinematic wipe transition */
-.wipe-enter-active,
-.wipe-leave-active {
-  transition: none; /* GSAP handles it */
-  will-change: clip-path;
+/* Page transition — CSS-based, reliable across all browsers */
+.page-leave-active {
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.page-enter-active {
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
 }
 </style>

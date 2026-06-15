@@ -3,7 +3,16 @@
     <div class="navbar__inner">
 
       <RouterLink to="/" class="navbar__logo" @click="closeMenu">
-        <span class="navbar__logo-text">Panlapan</span>
+        <!--
+          LOGO FILE — taruh file di: public/assets/icons/panlapan-logo.png
+          Uncomment <img> dan hapus placeholder <div> setelah file siap
+        -->
+        <img src="/assets/images/6-9-2026 - Icon Logo Panlapan - White.png" alt="Panlapan" class="navbar__logo-img" />
+
+        <!-- PLACEHOLDER — hapus setelah logo file siap -->
+        <!-- <div class="navbar__logo-placeholder">
+          <span class="navbar__logo-text">panlapan</span>
+        </div> -->
       </RouterLink>
 
       <nav class="navbar__links">
@@ -125,19 +134,26 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
 <style scoped>
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   padding: 1.5rem 2rem;
+  background: rgba(0, 0, 0);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              background 0.4s ease, padding 0.4s ease;
+              background 0.4s ease,
+              backdrop-filter 0.4s ease,
+              padding 0.4s ease;
 }
 
 .navbar--scrolled {
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 1rem 2rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .navbar--hidden { transform: translateY(-100%); }
@@ -150,16 +166,27 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   margin: 0 auto;
 }
 
-.navbar__logo      { text-decoration: none; z-index: 110; }
+.navbar__logo { text-decoration: none; z-index: 110; }
+
+.navbar__logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.navbar__logo-placeholder {
+  display: flex;
+  align-items: center;
+}
+
 .navbar__logo-text {
-  font-family: var(--font-primary);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-white);
   letter-spacing: -0.02em;
   text-transform: lowercase;
 }
-.navbar__logo-img  { height: 28px; width: auto; display: block; }
 
 .navbar__links     { display: flex; align-items: center; gap: 2.5rem; }
 
