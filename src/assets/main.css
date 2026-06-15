@@ -24,7 +24,7 @@
   --color-border-dark: rgba(17, 17, 17, 0.10);
 
   /* SATU-SATUNYA font yang dipakai di seluruh project */
-  --font-primary: "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  --font-primary: "Century Gothic", CenturyGothic !important;
 
   --section-padding: 7rem 2rem;
   --section-padding-mobile: 5rem 1.5rem;
@@ -93,6 +93,33 @@ body {
   width: 60px;
   height: 60px;
   border-color: rgba(255, 255, 255, 1);
+}
+
+.cursor-ring.is-viewing {
+  width: 80px;
+  height: 80px;
+  background: var(--color-white);
+  border-color: var(--color-white);
+  mix-blend-mode: normal; /* Normal blend mode so text is visible */
+}
+
+.cursor-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-black);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cursor-ring.is-viewing .cursor-text {
+  opacity: 1;
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -273,12 +300,6 @@ html.lenis {
 
 /* ===== REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-
   .cursor-dot,
   .cursor-ring {
     display: none;

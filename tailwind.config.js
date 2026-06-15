@@ -5,11 +5,11 @@ export default {
     './src/**/*.{vue,js,ts,jsx,tsx}'
   ],
   theme: {
-    // Override ALL default font stacks → Century Gothic everywhere
+    // Override ALL default font stacks → strictly Century Gothic everywhere
     fontFamily: {
-      sans:  ['"Century Gothic"', 'CenturyGothic', '"AppleGothic"', 'sans-serif'],
-      serif: ['"Century Gothic"', 'CenturyGothic', '"AppleGothic"', 'sans-serif'],
-      mono:  ['"Century Gothic"', 'CenturyGothic', '"AppleGothic"', 'sans-serif'],
+      sans:  ['"Century Gothic"', 'CenturyGothic'],
+      serif: ['"Century Gothic"', 'CenturyGothic'],
+      mono:  ['"Century Gothic"', 'CenturyGothic'],
     },
     extend: {
       colors: {

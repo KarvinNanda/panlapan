@@ -77,6 +77,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { gsap } from 'gsap'
 
 const route = useRoute()
 const isDetailPage = computed(() => route.path.startsWith('/work/'))
@@ -137,7 +138,21 @@ const closeMenu = () => {
 // Close menu automatically when navigating away from home
 watch(isDetailPage, (val) => { if (val) closeMenu() })
 
-onMounted(()  => window.addEventListener('scroll', handleScroll, { passive: true }))
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  
+  // Navbar Entrance Animation
+  if (navRef.value) {
+    const items = navRef.value.querySelectorAll('.navbar__logo, .navbar__link, .navbar__cta, .navbar__hamburger')
+    if (items.length) {
+      gsap.fromTo(items,
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.4 }
+      )
+    }
+  }
+})
+
 onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document.body.style.overflow = '' })
 </script>
 

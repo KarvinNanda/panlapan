@@ -44,6 +44,8 @@ export function useCustomCursor() {
     trails.length = 0
   }
 
+  const textRef = ref(null)
+  
   const MAGNETIC_STRENGTH = 0.35
   const magneticEls = []
 
@@ -53,24 +55,42 @@ export function useCustomCursor() {
     )
 
     targets.forEach(el => {
+      const isProjectCard = el.classList.contains('project-card') || el.hasAttribute('data-cursor-text')
+      const cursorText = el.getAttribute('data-cursor-text') || 'View'
+
       const onMove = (e) => {
         const rect = el.getBoundingClientRect()
         const cx   = rect.left + rect.width  / 2
         const cy   = rect.top  + rect.height / 2
         const dx   = e.clientX - cx
         const dy   = e.clientY - cy
-        gsap.to(el, {
-          x: dx * MAGNETIC_STRENGTH,
-          y: dy * MAGNETIC_STRENGTH,
-          duration: 0.4,
-          ease: 'power2.out'
-        })
-        ringRef.value?.classList.add('is-hovering')
+
+        // Only apply magnetic pull to smaller elements, not large project cards
+        if (!isProjectCard) {
+          gsap.to(el, {
+            x: dx * MAGNETIC_STRENGTH,
+            y: dy * MAGNETIC_STRENGTH,
+            duration: 0.4,
+            ease: 'power2.out'
+          })
+          ringRef.value?.classList.add('is-hovering')
+        } else {
+          ringRef.value?.classList.add('is-viewing')
+          if (textRef.value) textRef.value.innerText = cursorText
+          // Fade out the dot when viewing
+          if (dotRef.value) gsap.to(dotRef.value, { opacity: 0, duration: 0.2 })
+        }
       }
 
       const onLeave = () => {
-        gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' })
-        ringRef.value?.classList.remove('is-hovering')
+        if (!isProjectCard) {
+          gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' })
+          ringRef.value?.classList.remove('is-hovering')
+        } else {
+          ringRef.value?.classList.remove('is-viewing')
+          if (textRef.value) textRef.value.innerText = ''
+          if (dotRef.value) gsap.to(dotRef.value, { opacity: 1, duration: 0.2 })
+        }
       }
 
       el.addEventListener('mousemove',  onMove)
@@ -158,5 +178,5 @@ export function useCustomCursor() {
     detachMagnetic()
   })
 
-  return { dotRef, ringRef }
+  return { dotRef, ringRef, textRef }
 }

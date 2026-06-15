@@ -5,12 +5,12 @@
       <!-- Section header -->
       <div class="works__header" ref="headerRef">
         <h2 class="works__headline">
-          Brands Don't Grow Because They're Seen.
-          <span class="works__headline--alt">They Grow Because They're Remembered.</span>
+          <span class="text-reveal-wrapper"><span class="reveal-target">Brands Don't Grow Because They're Seen.</span></span>
+          <span class="text-reveal-wrapper"><span class="works__headline--alt reveal-target">They Grow Because They're Remembered.</span></span>
         </h2>
         <p class="works__sub">
-          Panlapan helps businesses build brands, create demand, and grow through
-          strategy, creativity, and digital experiences.
+          <span class="text-reveal-wrapper"><span class="reveal-target" style="display: block;">Panlapan helps businesses build brands, create demand, and grow through</span></span>
+          <span class="text-reveal-wrapper"><span class="reveal-target" style="display: block;">strategy, creativity, and digital experiences.</span></span>
         </p>
         <a href="#connect" class="works__header-cta" data-cursor-hover
            @click.prevent="scrollToConnect">
@@ -34,12 +34,14 @@
               class="works__card-slide"
               :class="{ 'is-active': activeSlide[index] === i }"
             >
-              <img
-                :src="img"
-                :alt="`${project.title} ${i + 1}`"
-                class="works__card-img"
-                loading="lazy"
-              />
+              <div class="works__card-parallax" data-parallax>
+                <img
+                  :src="img"
+                  :alt="`${project.title} ${i + 1}`"
+                  class="works__card-img"
+                  loading="lazy"
+                />
+              </div>
             </div>
 
             <!-- Progress bar -->
@@ -101,11 +103,13 @@ import { useRouter } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
+import { useTextReveal } from '@/composables/useTextReveal.js'
 import projects from '@/data/projects.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const { attach: magnet } = useMagnet()
+const { revealText } = useTextReveal()
 
 const router      = useRouter()
 const sectionRef  = ref(null)
@@ -141,13 +145,20 @@ onMounted(() => {
   magnet(footerBtnRef.value)
 
   gsapCtx = gsap.context(() => {
+    // 1. Text Reveal for header
+    const targets = headerRef.value?.querySelectorAll('.reveal-target')
+    if (targets?.length) {
+      revealText(targets, headerRef.value)
+    }
+
+    // 2. Button fade in
     gsap.fromTo(
-      headerRef.value?.querySelectorAll('h2, p, a'),
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.1, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
+      headerRef.value?.querySelector('.works__header-cta'),
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.9, delay: 0.3, ease: 'power3.out', scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
     )
 
+    // 3. Card stagger
     const cards = listRef.value?.querySelectorAll('.works__card')
     if (cards?.length) {
       gsap.fromTo(cards,
@@ -155,6 +166,26 @@ onMounted(() => {
         { opacity: 1, y: 0, stagger: 0.12, duration: 0.85, ease: 'power3.out',
           scrollTrigger: { trigger: listRef.value, start: 'top 82%' } }
       )
+    }
+
+    // 4. Parallax images
+    const parallaxWraps = listRef.value?.querySelectorAll('[data-parallax]')
+    if (parallaxWraps?.length) {
+      parallaxWraps.forEach(wrap => {
+        gsap.fromTo(wrap,
+          { yPercent: -8 },
+          {
+            yPercent: 8,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: wrap.closest('.works__card-media'),
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true
+            }
+          }
+        )
+      })
     }
   })
 })
@@ -349,14 +380,21 @@ onUnmounted(() => {
 }
 
 @keyframes kenBurns {
-  0%   { transform: scale(1.08) translate(0%, 0%);     }
-  100% { transform: scale(1.00) translate(-1%, -0.5%); }
+  0%   { transform: scale(1.08); }
+  100% { transform: scale(1.00); }
+}
+
+.works__card-parallax {
+  width: 100%;
+  height: 116%; /* Taller for parallax room */
+  top: -8%;
+  position: absolute;
 }
 
 .works__card-img {
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
   display: block;
   transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

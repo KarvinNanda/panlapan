@@ -29,12 +29,16 @@
           :alt="`${project.title} logo`"
           class="work-detail__logo"
         />
-        <h1 class="work-detail__title">{{ project.title }}</h1>
+        <h1 class="work-detail__title">
+          <span class="text-reveal-wrapper"><span class="reveal-target">{{ project.title }}</span></span>
+        </h1>
       </div>
 
       <!-- Full description -->
       <div class="work-detail__desc" ref="descRef">
-        <p v-for="(para, i) in descParagraphs" :key="i">{{ para }}</p>
+        <p v-for="(para, i) in descParagraphs" :key="i">
+          <span class="text-reveal-wrapper"><span class="reveal-target" style="display: block;">{{ para }}</span></span>
+        </p>
       </div>
 
       <!-- Category + Publisher row -->
@@ -83,9 +87,12 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useTextReveal } from '@/composables/useTextReveal.js'
 import { getProjectBySlug } from '@/data/projects.js'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const { revealText } = useTextReveal()
 
 const route = useRoute()
 const project = computed(() => getProjectBySlug(route.params.slug))
@@ -142,20 +149,14 @@ onMounted(async () => {
         )
       }
       if (title) {
-        tl.fromTo(title,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power4.out' },
-          '-=0.4'
-        )
+        const target = title.querySelector('.reveal-target')
+        if (target) revealText(target, null, 0.4)
       }
     }
 
     if (descRef.value) {
-      gsap.fromTo(descRef.value,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: descRef.value, start: 'top 88%' } }
-      )
+      const targets = descRef.value.querySelectorAll('.reveal-target')
+      if (targets?.length) revealText(targets, descRef.value, 0)
     }
 
     if (metaRef.value) {
@@ -169,15 +170,34 @@ onMounted(async () => {
     const wraps = galleryRef.value?.querySelectorAll('.work-detail__img-wrap')
     if (wraps?.length) {
       wraps.forEach((wrap) => {
+        // Entrance clip-path animation
         gsap.fromTo(wrap,
           { clipPath: 'inset(100% 0 0 0)' },
           {
             clipPath: 'inset(0% 0 0 0)',
-            duration: 1.1,
+            duration: 1.2,
             ease: 'power4.inOut',
-            scrollTrigger: { trigger: wrap, start: 'top 92%' }
+            scrollTrigger: { trigger: wrap, start: 'top 95%' }
           }
         )
+
+        // Image Parallax
+        const img = wrap.querySelector('.work-detail__image')
+        if (img) {
+          gsap.fromTo(img,
+            { yPercent: -8, scale: 1.15 },
+            {
+              yPercent: 8,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: wrap,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true
+              }
+            }
+          )
+        }
       })
     }
   })

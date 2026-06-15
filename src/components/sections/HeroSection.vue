@@ -1,6 +1,11 @@
 <template>
   <section class="hero" ref="heroRef">
-    <div class="hero__bg" />
+    <div class="hero__bg">
+      <div class="hero__bg-blob blob-1"></div>
+      <div class="hero__bg-blob blob-2"></div>
+      <div class="hero__bg-blob blob-3"></div>
+      <div class="hero__bg-overlay"></div>
+    </div>
 
     <div class="hero__inner">
       <!-- Ghost wordmark — barely visible, sama nuansa merah -->
@@ -72,16 +77,23 @@ let ctx = null
 onMounted(() => {
   ctx = gsap.context(() => {
     const lines = headlineRef.value?.querySelectorAll('.hero__line')
-    const tl = gsap.timeline({ delay: 0.1 })
+    const tl = gsap.timeline({ delay: 0.2 })
 
     if (wordmarkRef.value) {
       gsap.set(wordmarkRef.value, { opacity: 0 })
-      tl.to(wordmarkRef.value, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 0)
+      tl.to(wordmarkRef.value, { opacity: 1, duration: 2, ease: 'power2.out' }, 0)
     }
 
     if (lines?.length) {
-      gsap.set(lines, { y: '110%', opacity: 0 })
-      tl.to(lines, { y: '0%', opacity: 1, duration: 1, stagger: 0.08, ease: 'power4.out' }, 0.3)
+      // Charlie Osborne signature dramatic reveal: deeply offset, rotated, slow expo curve
+      gsap.set(lines, { y: '150%', rotationZ: 5, transformOrigin: '0% 50%' })
+      tl.to(lines, { 
+        y: '0%', 
+        rotationZ: 0, 
+        duration: 2, 
+        stagger: 0.15, 
+        ease: 'expo.out' 
+      }, 0.2)
     }
 
     // Scroll parallax — wordmark drifts up as you scroll away from hero
@@ -127,19 +139,80 @@ onUnmounted(() => ctx?.revert())
   overflow: hidden;
 }
 
-/* Red → hitam gradient */
+/* Lava lamp base */
 .hero__bg {
   position: absolute;
   inset: 0;
+  background-color: #E73121; /* Base Red */
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Organic moving blobs */
+.hero__bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px); /* Reduced blur slightly for better definition */
+  opacity: 0.95;
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 50vw;
+  height: 50vw;
+  background: #FF5B22; /* Bright vibrant orange */
+  bottom: 5%;
+  left: 20%;
+  animation: lavaFloat1 18s infinite ease-in-out;
+}
+
+.blob-2 {
+  width: 45vw;
+  height: 45vw;
+  background: #7A0A00; /* Deep contrasting dark red */
+  bottom: 0%;
+  left: 45%;
+  animation: lavaFloat2 22s infinite ease-in-out;
+}
+
+.blob-3 {
+  width: 55vw;
+  height: 40vw;
+  background: #FF9B50; /* Light highlight orange */
+  bottom: 15%;
+  left: 35%;
+  animation: lavaFloat3 26s infinite ease-in-out;
+}
+
+/* Overlay to ensure the bottom smoothly fades into the black section below */
+.hero__bg-overlay {
+  position: absolute;
+  inset: 0;
+  /* Reduced opacity of the gradient so the lava is clearly visible */
   background: linear-gradient(
     to bottom,
-    #E73121 0%,
-    #E73121 40%,
-    #9B1A0E 65%,
-    #3D0A05 82%,
+    rgba(231, 49, 33, 0) 0%,
+    rgba(231, 49, 33, 0) 65%,
+    rgba(155, 26, 14, 0.4) 85%,
     #000000 100%
   );
-  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes lavaFloat1 {
+  0%   { transform: translate(-10%, 10%) scale(1); }
+  50%  { transform: translate(25%, -15%) scale(1.1); }
+  100% { transform: translate(-10%, 10%) scale(1); }
+}
+@keyframes lavaFloat2 {
+  0%   { transform: translate(20%, 0%) scale(1.1); }
+  50%  { transform: translate(-20%, 15%) scale(0.9); }
+  100% { transform: translate(20%, 0%) scale(1.1); }
+}
+@keyframes lavaFloat3 {
+  0%   { transform: translate(0%, -15%) scale(0.9); }
+  50%  { transform: translate(15%, 10%) scale(1.15); }
+  100% { transform: translate(0%, -15%) scale(0.9); }
 }
 
 /* Inner — flex column, space-between: wordmark di atas, konten di bawah */
@@ -280,5 +353,10 @@ onUnmounted(() => ctx?.revert())
 @media (max-width: 768px) {
   .hero__inner    { padding-top: 5rem; padding-bottom: 3rem; }
   .hero__wordmark { font-size: clamp(4.5rem, 18vw, 8rem); }
+
+  /* Make blobs much larger on mobile portrait so they cover the area */
+  .blob-1 { width: 140vw; height: 140vw; bottom: 0%; left: -20%; }
+  .blob-2 { width: 120vw; height: 120vw; bottom: -5%; left: 10%; }
+  .blob-3 { width: 150vw; height: 100vw; bottom: 10%; left: -10%; }
 }
 </style>

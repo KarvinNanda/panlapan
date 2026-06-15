@@ -37,8 +37,8 @@ watch(() => route.path, (newPath, oldPath) => {
   // Kill synchronously BEFORE Vue updates DOM (before new page components mount)
   ScrollTrigger.getAll().forEach(t => t.kill())
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  // Wait for leave transition (280ms) + component mount before refresh
-  setTimeout(() => ScrollTrigger.refresh(), 500)
+  // Wait for leave transition (500ms) + component mount before refresh
+  setTimeout(() => ScrollTrigger.refresh(), 600)
 })
 </script>
 
@@ -49,19 +49,18 @@ watch(() => route.path, (newPath, oldPath) => {
   min-height: 100dvh;
 }
 
-/* Page transition — CSS-based, reliable across all browsers */
+/* Page transition — Premium Native App Feel */
+.page-enter-active,
 .page-leave-active {
-  transition: opacity 0.28s ease, transform 0.28s ease;
-}
-.page-enter-active {
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.5s cubic-bezier(0.76, 0, 0.24, 1), 
+              transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
 }
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-20px) scale(0.98);
 }
 .page-enter-from {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(20px) scale(0.98);
 }
 </style>
