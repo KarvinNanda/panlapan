@@ -152,6 +152,25 @@ onUnmounted(() => ctx?.revert())
   text-align: right;
 }
 
+.why__qa-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 0.5rem;
+}
+
+.why__qa-text {
+  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.why__qa-text--ours {
+  color: #E73121;
+}
 
 /* ── Gradient band ── */
 .why__band {
@@ -208,7 +227,9 @@ onUnmounted(() => ctx?.revert())
     gap: 2.5rem;
   }
 
-  .why__qa { max-width: 72%; }
+  .why__qa { max-width: 85%; }
+  .why__qa-label { font-size: 0.6rem; }
+  .why__qa-text { font-size: clamp(1rem, 4.5vw, 1.4rem); }
 
   .why__band {
     padding: 5rem 1.5rem;

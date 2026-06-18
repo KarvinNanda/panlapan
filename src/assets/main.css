@@ -7,6 +7,29 @@
    Font: Century Gothic
    Theme: Black & White minimal
    ================================================ */
+@font-face {
+  font-family: "Century Gothic";
+  src: url('@/assets/fonts/CenturyGothic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Century Gothic";
+  src: url('@/assets/fonts/CenturyGothic-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Century Gothic";
+  src: url('@/assets/fonts/CenturyGothic-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   --color-black: #000000;
@@ -286,6 +309,65 @@ html.lenis {
 .btn-outline:hover {
   border-color: var(--color-white);
   background: rgba(255, 255, 255, 0.05);
+}
+
+/* Navy button — dipakai di Works & Services section */
+.btn-navy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  position: relative;
+  background: rgba(21, 64, 133, 0.50);
+  color: rgba(255, 255, 255, 0.90);
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  border-radius: 100px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  cursor: none;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  isolation: isolate;
+}
+
+/*
+ * Gradient border via ::before + mask-composite:
+ * padding: 1px creates a 1px ring
+ * mask-composite: exclude hollows out the center
+ * → only the 1px ring is visible, with gradient:
+ *   kiri-atas & kanan-bawah = putih, kanan-atas & kiri-bawah = transparan
+ */
+.btn-navy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.00) 20%,
+    rgba(255, 255, 255, 0.00) 80%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.btn-navy:hover {
+  background: rgba(21, 64, 133, 0.70);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1px);
 }
 
 /* ===== MARQUEE / TICKER ===== */

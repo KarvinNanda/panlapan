@@ -12,7 +12,7 @@
       <div class="hero__wordmark" ref="wordmarkRef">panlapan</div>
        <h1 class="hero__headline" ref="headlineRef">
           <div class="text-reveal-wrapper">
-            <span class="hero__line">turning ideas</span>
+            <span class="hero__line">Turning ideas</span>
           </div>
           <div class="text-reveal-wrapper">
             <span class="hero__line">into impactful</span>
@@ -149,18 +149,18 @@ onUnmounted(() => ctx?.revert())
 }
 
 /* Organic moving blobs */
-.hero__bg-blob {
+/* .hero__bg-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px); /* Reduced blur slightly for better definition */
+  filter: blur(80px); 
   opacity: 0.95;
   will-change: transform;
-}
+} */
 
-.blob-1 {
+/* .blob-1 {
   width: 50vw;
   height: 50vw;
-  background: #FF5B22; /* Bright vibrant orange */
+  background: #FF5B22; 
   bottom: 5%;
   left: 20%;
   animation: lavaFloat1 18s infinite ease-in-out;
@@ -169,7 +169,7 @@ onUnmounted(() => ctx?.revert())
 .blob-2 {
   width: 45vw;
   height: 45vw;
-  background: #7A0A00; /* Deep contrasting dark red */
+  background: #7A0A00; 
   bottom: 0%;
   left: 45%;
   animation: lavaFloat2 22s infinite ease-in-out;
@@ -178,11 +178,11 @@ onUnmounted(() => ctx?.revert())
 .blob-3 {
   width: 55vw;
   height: 40vw;
-  background: #FF9B50; /* Light highlight orange */
+  background: #FF9B50; 
   bottom: 15%;
   left: 35%;
   animation: lavaFloat3 26s infinite ease-in-out;
-}
+} */
 
 /* Overlay to ensure the bottom smoothly fades into the black section below */
 .hero__bg-overlay {
@@ -192,14 +192,14 @@ onUnmounted(() => ctx?.revert())
   background: linear-gradient(
     to bottom,
     rgba(231, 49, 33, 0) 0%,
-    rgba(231, 49, 33, 0) 65%,
-    rgba(155, 26, 14, 0.4) 85%,
+    rgba(231, 49, 33, 0) 35%,
+    rgba(155, 26, 14, 0.4) 44%,
     #000000 100%
   );
   pointer-events: none;
 }
 
-@keyframes lavaFloat1 {
+/* @keyframes lavaFloat1 {
   0%   { transform: translate(-10%, 10%) scale(1); }
   50%  { transform: translate(25%, -15%) scale(1.1); }
   100% { transform: translate(-10%, 10%) scale(1); }
@@ -213,7 +213,7 @@ onUnmounted(() => ctx?.revert())
   0%   { transform: translate(0%, -15%) scale(0.9); }
   50%  { transform: translate(15%, 10%) scale(1.15); }
   100% { transform: translate(0%, -15%) scale(0.9); }
-}
+} */
 
 /* Inner — flex column, space-between: wordmark di atas, konten di bawah */
 .hero__inner {
@@ -273,7 +273,7 @@ onUnmounted(() => ctx?.revert())
   letter-spacing: -0.02em;
   margin-bottom: 2rem;
   overflow: hidden;
-  text-transform: lowercase;
+  /* text-transform: lowercase; */
 }
 
 .hero__line { display: block; }

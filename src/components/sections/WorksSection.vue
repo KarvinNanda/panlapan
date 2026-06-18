@@ -12,7 +12,8 @@
           <span class="text-reveal-wrapper"><span class="reveal-target" style="display: block;">Panlapan helps businesses build brands, create demand, and grow through</span></span>
           <span class="text-reveal-wrapper"><span class="reveal-target" style="display: block;">strategy, creativity, and digital experiences.</span></span>
         </p>
-        <a href="#connect" class="works__header-cta" data-cursor-hover
+        <a href="#connect" class="btn-navy works__header-cta"
+           data-cursor-hover
            @click.prevent="scrollToConnect">
           Start a Project
         </a>
@@ -56,7 +57,7 @@
 
           <!-- Card body -->
           <div class="works__card-body">
-            <div class="works__card-left">
+            <div class="works__card-header">
               <div class="works__card-title-row">
                 <img
                   v-if="project.logo"
@@ -66,28 +67,33 @@
                 />
                 <h3 class="works__card-title">{{ project.title }}</h3>
               </div>
-              <p class="works__card-desc">{{ project.description }}</p>
-              <span class="works__card-cta eyebrow">View Project</span>
+              <span class="works__card-num">{{ String(index + 1).padStart(2, '0') }}</span>
             </div>
 
-            <div class="works__card-right">
-              <span class="works__card-num">{{ String(index + 1).padStart(2, '0') }}</span>
-              <div class="works__card-meta">
-                <span class="works__card-meta-label">Category</span>
-                <span class="works__card-category">{{ project.category }}</span>
+            <div class="works__card-content">
+              <div class="works__card-left">
+                <p class="works__card-desc">{{ project.description }}</p>
+                <span class="works__card-cta eyebrow">View Project</span>
               </div>
-              <div class="works__card-meta">
-                <span class="works__card-meta-label">Publisher</span>
-                <span class="works__card-year">{{ project.year }}</span>
+
+              <div class="works__card-right">
+                <div class="works__card-meta">
+                  <span class="works__card-meta-label">Category</span>
+                  <span class="works__card-category">{{ project.category }}</span>
+                </div>
+                <div class="works__card-meta">
+                  <span class="works__card-meta-label">Publisher</span>
+                  <span class="works__card-year">{{ project.year }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Mobile CTA — tampil di bawah semua card -->
+      <!-- Mobile CTA — tampil di bawah semua card (<=1024px) -->
       <div class="works__footer-cta">
-        <a href="#connect" class="works__footer-btn" ref="footerBtnRef" data-cursor-hover
+        <a href="#connect" class="btn-navy" data-cursor-hover
            @click.prevent="scrollToConnect">
           Start a Project
         </a>
@@ -115,7 +121,6 @@ const router      = useRouter()
 const sectionRef  = ref(null)
 const headerRef   = ref(null)
 const listRef     = ref(null)
-const footerBtnRef = ref(null)
 
 // Slider state
 const activeSlide     = reactive(projects.map(() => 0))
@@ -141,8 +146,6 @@ const scrollToConnect = () => {
 
 onMounted(() => {
   projects.forEach((_, i) => startAutoplay(i))
-
-  magnet(footerBtnRef.value)
 
   gsapCtx = gsap.context(() => {
     // 1. Text Reveal for header
@@ -239,87 +242,15 @@ onUnmounted(() => {
 }
 
 .works__sub {
-  font-size: 0.9rem;
+  font-size: clamp(0.82rem, 1.2vw, 0.95rem);
   color: rgba(255, 255, 255, 0.82);
   line-height: 1.75;
   margin-bottom: 2rem;
   font-weight: 400;
 }
 
-/* Desktop header CTA */
-.works__header-cta {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.8rem 1.6rem;
-  background: linear-gradient(
-    155deg,
-    rgba(30, 65, 155, 0.72) 0%,
-    rgba(10, 28, 90, 0.88) 100%
-  );
-  backdrop-filter: blur(24px) saturate(1.5);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  color: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 8px 32px rgba(0, 10, 60, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
-  border-radius: 100px;
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: all 0.35s ease;
-  cursor: none;
-}
-
-.works__footer-btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 1rem 2.75rem;
-  /* Liquid glass: dark navy gradient + frosted blur */
-  background: linear-gradient(
-    155deg,
-    rgba(30, 65, 155, 0.72) 0%,
-    rgba(10, 28, 90, 0.88) 100%
-  );
-  backdrop-filter: blur(24px) saturate(1.5);
-  -webkit-backdrop-filter: blur(24px) saturate(1.5);
-  color: rgba(255, 255, 255, 0.95);
-  border-radius: 100px;
-  /* Border tipis — efek tepi kaca */
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  /* Shadow: outer depth + inner highlight kaca di atas */
-  box-shadow:
-    0 8px 32px rgba(0, 10, 60, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
-  font-size: 0.82rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: all 0.35s ease;
-  cursor: none;
-}
-
-.works__footer-btn:hover {
-  background: linear-gradient(
-    155deg,
-    rgba(45, 90, 195, 0.80) 0%,
-    rgba(18, 45, 120, 0.92) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.36);
-  box-shadow:
-    0 12px 40px rgba(0, 10, 60, 0.70),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.18);
-  transform: translateY(-2px);
-}
-
-.works__header-cta:hover {
-  border-color: var(--color-white);
-  background: rgba(255, 255, 255, 0.05);
-}
+/* Desktop header CTA — visual styles come from .btn-navy in main.css */
+/* Mobile footer CTA — visual styles come from .btn-navy in main.css */
 
 /* Mobile footer CTA */
 .works__footer-cta {
@@ -431,15 +362,27 @@ onUnmounted(() => {
 /* Card body */
 .works__card-body {
   display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.works__card-header {
+  display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.works__card-content {
+  display: grid;
+  grid-template-columns: 1fr 130px;
   gap: 1rem;
+  align-items: stretch;
 }
 
 .works__card-left {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
@@ -484,8 +427,10 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 1.25rem;
+  justify-content: space-between;
+  gap: 0.75rem;
   flex-shrink: 0;
+  min-width: 120px;
 }
 
 .works__card-num {
@@ -525,25 +470,11 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .works { padding: 5rem 1.5rem; }
 
-  /* Card body: tetap row */
-  .works__card-body {
-    flex-direction: row;
-    align-items: flex-end;
-    gap: 0.75rem;
-  }
-
-  /* Right column: stack vertikal, rata KIRI */
-  .works__card-right {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 1rem;
-    flex-shrink: 0;
-    width: 110px;
-  }
-
-  .works__card-meta       { align-items: flex-end; }
+  .works__card-content { grid-template-columns: 1fr 110px; gap: 0.75rem; }
+  .works__card-right { min-width: unset; }
+  .works__card-meta { align-items: flex-end; }
   .works__card-category,
-  .works__card-year        { text-align: left; }
+  .works__card-year        { text-align: right; }
   .works__card-logo        { width: 30px; height: 30px; }
 }
 </style>

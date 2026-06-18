@@ -190,8 +190,9 @@ onUnmounted(() => ctx?.revert())
 
 /* ── TABLET ── */
 @media (max-width: 1024px) {
-  .approach__inner  { grid-template-columns: 1fr; gap: 3rem; }
-  .approach__header { position: static; }
+  .approach__inner      { grid-template-columns: 1fr; gap: 3rem; }
+  .approach__header     { position: static; }
+  .approach__step-desc  { max-width: 100%; }
 }
 
 /* ── MOBILE ── */

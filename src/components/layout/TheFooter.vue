@@ -102,7 +102,7 @@
 
 /* Tagline */
 .footer__tagline {
-  font-size: clamp(1.5rem, 7.5vw, 1.5rem);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
   font-weight: 700;
   color: var(--color-white);
   letter-spacing: -0.02em;
@@ -118,4 +118,7 @@
   line-height: 1.6;
 }
 
+@media (max-width: 768px) {
+  .footer__inner { padding: 4rem 1.5rem 1rem; }
+}
 </style>

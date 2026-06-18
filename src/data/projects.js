@@ -17,7 +17,7 @@ export const projects = [
     client: 'Prana Holistic Care by Marisa',
     year: '2025',
     industry: 'Beautycare',
-    category: 'Brand Identity',
+    category: 'Brand Strategy & Identity',
     tags: ['Brand Identity', 'Packaging Design', 'Visual System','Interior Design'],
 
     // logo → shown beside title on detail page

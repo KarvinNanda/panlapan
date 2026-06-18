@@ -34,9 +34,10 @@
         </div>
       </div>
 
-      <!-- Footer button — liquid glass, scroll ke hero -->
+      <!-- Footer button — scroll ke connect -->
       <div class="services__footer">
-        <a href="#" class="services__footer-btn" ref="footerBtnRef" @click.prevent="scrollToHero">
+        <a href="#connect" class="btn-navy" data-cursor-hover
+           @click.prevent="scrollToConnect">
           panlapan
         </a>
       </div>
@@ -63,6 +64,10 @@ const footerBtnRef = ref(null)
 
 const scrollToHero = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const scrollToConnect = () => {
+  document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })
 }
 
 const services = [
@@ -214,11 +219,11 @@ onUnmounted(() => ctx?.revert())
   border-color: rgba(255,255,255,0.2);
 }
 
-/* Footer button — liquid glass, centered */
+/* Footer button — centered */
 .services__footer {
   display: flex;
   justify-content: center;
-  padding-top: 4rem;
+  padding-top: 3rem;
 }
 
 .services__footer-btn {
@@ -259,6 +264,12 @@ onUnmounted(() => ctx?.revert())
     inset 0 1px 0 rgba(255, 255, 255, 0.30),
     inset 0 -1px 0 rgba(0, 0, 0, 0.18);
   transform: translateY(-2px);
+}
+
+/* ── TABLET ── */
+@media (max-width: 1024px) {
+  .services__header { gap: 1rem; }
+  .service-item__content { margin-left: 2.5rem; }
 }
 
 /* ── MOBILE ── */
