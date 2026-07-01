@@ -161,7 +161,7 @@ onUnmounted(() => ctx?.revert())
 }
 
 .why__qa-text {
-  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  font-size: clamp(1.2rem, 2vw, 1.75rem);
   font-weight: 400;
   color: var(--color-white);
   line-height: 1.3;
