@@ -154,7 +154,7 @@ onUnmounted(() => ctx?.revert())
   color: #E73121;
 }
 
-.services__what { flex-shrink: 0; }
+.services__what { flex-shrink: 0; text-transform: none; letter-spacing: 0.04em; }
 
 .services__grid { margin-top: 2rem; display: flex; flex-direction: column; }
 
@@ -300,16 +300,18 @@ onUnmounted(() => ctx?.revert())
     color: rgba(255,255,255,0.50) !important;
   }
 
-  /* Service item: 2 kolom (kiri nama, kanan konten) */
+  /* Service item: title+desc kiri, list kanan */
   .service-item {
     display: grid;
     grid-template-columns: 2fr 3fr;
     grid-template-areas:
-      "header content";
-    gap: 1.25rem;
+      "header list"
+      "desc   list";
+    column-gap: 1.25rem;
+    row-gap: 0.5rem;
     align-items: start;
     padding: 2rem 0;
-    padding-left: 0 !important; /* override hover shift */
+    padding-left: 0 !important;
   }
 
   .service-item__header {
@@ -330,24 +332,25 @@ onUnmounted(() => ctx?.revert())
     letter-spacing: -0.01em;
   }
 
-  /* Konten kanan */
-  .service-item__content {
-    grid-area: content;
-    margin-left: 0;
-  }
+  /* Unwrap content div — children join parent grid directly */
+  .service-item__content { display: contents; }
 
   .service-item__desc {
+    grid-area: desc;
     font-size: 0.78rem;
     color: rgba(255,255,255,0.55);
-    margin-bottom: 0.75rem;
     line-height: 1.6;
+    margin-left: 0;
+    margin-bottom: 0;
   }
 
-  /* List items: plain text, tanpa pill border */
+  /* List items: plain text, kanan */
   .service-item__list {
+    grid-area: list;
     flex-direction: column;
     flex-wrap: nowrap;
     gap: 0.2rem;
+    margin-left: 0;
   }
 
   .service-item__list-item {

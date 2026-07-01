@@ -19,7 +19,7 @@
         </div>
         <div class="why__qa why__qa--right">
           <span class="why__qa-label">We ask:</span>
-          <p class="why__qa-text why__qa-text--ours">"What business outcome are you trying to achieve?"</p>
+          <p class="why__qa-text">"What business outcome are you trying to achieve?"</p>
         </div>
       </div>
 
@@ -120,7 +120,6 @@ onUnmounted(() => ctx?.revert())
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-white);
-  text-transform: lowercase;
   line-height: 1;
   margin-bottom: 1.25rem;
 }
@@ -153,16 +152,17 @@ onUnmounted(() => ctx?.revert())
 }
 
 .why__qa-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  font-weight: 400;
+  color: var(--color-white);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-bottom: 0;
 }
 
 .why__qa-text {
   font-size: clamp(1.1rem, 2vw, 1.75rem);
-  font-weight: 700;
+  font-weight: 400;
   color: var(--color-white);
   line-height: 1.3;
   letter-spacing: -0.02em;
@@ -228,8 +228,8 @@ onUnmounted(() => ctx?.revert())
   }
 
   .why__qa { max-width: 85%; }
-  .why__qa-label { font-size: 0.6rem; }
-  .why__qa-text { font-size: clamp(1rem, 4.5vw, 1.4rem); }
+  .why__qa-label { font-size: clamp(1rem, 4.5vw, 1.4rem); }
+  .why__qa-text  { font-size: clamp(1rem, 4.5vw, 1.4rem); }
 
   .why__band {
     padding: 5rem 1.5rem;
