@@ -27,8 +27,8 @@
           class="works__card project-card"
           @click="$router.push(`/work/${project.slug}`)"
         >
-          <!-- Ken Burns image slider -->
-          <div class="works__card-media">
+          <!-- Ken Burns image slider — hidden for video-only projects -->
+          <div class="works__card-media" v-if="project.images?.length">
             <div
               v-for="(img, i) in project.images.slice(0, 6)"
               :key="i"
@@ -110,7 +110,9 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
 import { useTextReveal } from '@/composables/useTextReveal.js'
-import projects from '@/data/projects.js'
+import projectsRaw from '@/data/projects.js'
+
+const projects = [...projectsRaw].sort((a, b) => a.title.localeCompare(b.title))
 
 gsap.registerPlugin(ScrollTrigger)
 

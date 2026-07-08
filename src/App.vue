@@ -1,5 +1,10 @@
 <template>
   <div id="app-wrapper">
+    <!-- Page-load intro curtain -->
+    <div class="intro-curtain" ref="introRef" v-if="showIntro">
+      <div v-for="n in 5" :key="n" class="intro-curtain__panel" />
+    </div>
+
     <!-- Custom cursor (desktop only) -->
     <CustomCursor />
 
@@ -19,8 +24,9 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
+import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import TheNavbar from '@/components/layout/TheNavbar.vue'
@@ -30,6 +36,22 @@ import { useLenis } from '@/composables/useLenis.js'
 useLenis()
 
 const route = useRoute()
+
+const showIntro = ref(true)
+const introRef  = ref(null)
+
+onMounted(() => {
+  const panels = introRef.value?.querySelectorAll('.intro-curtain__panel')
+  if (!panels?.length) return
+  gsap.to(panels, {
+    yPercent: -100,
+    duration: 1.0,
+    stagger: { amount: 0.3, from: 'center' },
+    ease: 'power4.inOut',
+    delay: 0.15,
+    onComplete: () => { showIntro.value = false }
+  })
+})
 
 // On every route change: kill stale triggers → scroll to top → refresh after new page mounts
 watch(() => route.path, (newPath, oldPath) => {
@@ -47,6 +69,23 @@ watch(() => route.path, (newPath, oldPath) => {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+}
+
+/* ── Intro curtain ── */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  pointer-events: none;
+}
+
+.intro-curtain__panel {
+  flex: 1;
+  height: 100%;
+  background: #111111;
+  will-change: transform;
+  transform-origin: top center;
 }
 
 /* Page transition — Premium Native App Feel */

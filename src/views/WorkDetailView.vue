@@ -54,6 +54,33 @@
       </div>
     </section>
 
+    <!-- Video player (manual play) — shown if project has a video -->
+    <section class="work-detail__video-section" ref="videoSectionRef" v-if="project.video">
+      <div class="work-detail__video-wrap">
+        <video
+          ref="videoEl"
+          :src="project.video"
+          class="work-detail__video"
+          preload="metadata"
+          playsinline
+          @ended="isPlaying = false"
+        />
+        <Transition name="overlay-fade">
+          <div
+            v-if="!isPlaying"
+            class="work-detail__video-overlay"
+            @click="playVideo"
+          >
+            <button class="work-detail__play-btn" aria-label="Play">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+          </div>
+        </Transition>
+      </div>
+    </section>
+
     <!-- Images stacked full-width -->
     <section class="work-detail__gallery" ref="galleryRef" v-if="project.images?.length">
       <div
@@ -102,12 +129,22 @@ const descParagraphs = computed(() => {
   return text.split(/\n\n+/).filter(Boolean)
 })
 
-const progressRef = ref(null)
-const backRef     = ref(null)
-const headerRef   = ref(null)
-const descRef     = ref(null)
-const metaRef     = ref(null)
-const galleryRef  = ref(null)
+const progressRef    = ref(null)
+const backRef        = ref(null)
+const headerRef      = ref(null)
+const descRef        = ref(null)
+const metaRef        = ref(null)
+const galleryRef     = ref(null)
+const videoSectionRef = ref(null)
+const videoEl        = ref(null)
+const isPlaying      = ref(false)
+
+const playVideo = () => {
+  if (videoEl.value) {
+    videoEl.value.play()
+    isPlaying.value = true
+  }
+}
 
 let ctx = null
 let onScroll = null
@@ -164,6 +201,14 @@ onMounted(async () => {
         { opacity: 0, y: 16 },
         { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
           scrollTrigger: { trigger: metaRef.value, start: 'top 90%' } }
+      )
+    }
+
+    if (videoSectionRef.value) {
+      gsap.fromTo(videoSectionRef.value,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: videoSectionRef.value, start: 'top 90%' } }
       )
     }
 
@@ -347,18 +392,83 @@ onUnmounted(() => {
 .work-detail__img-wrap {
   overflow: hidden;
   border-radius: 8px;
+  display: flex;
+  justify-content: center;
 }
 
 .work-detail__image {
-  width: 100%;
-  height: auto;
   display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 80vh;
   transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .work-detail__img-wrap:hover .work-detail__image {
   transform: scale(1.03);
 }
+
+/* Video section */
+.work-detail__video-section {
+  padding: 2rem 2rem 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.work-detail__video-wrap {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 16 / 9;
+}
+
+.work-detail__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.work-detail__video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.38);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.work-detail__video-overlay:hover { background: rgba(0, 0, 0, 0.22); }
+
+.work-detail__play-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #111;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.work-detail__play-btn:hover {
+  transform: scale(1.08);
+  background: #fff;
+}
+
+.work-detail__play-btn svg { margin-left: 3px; }
+
+.overlay-fade-enter-active,
+.overlay-fade-leave-active { transition: opacity 0.35s ease; }
+.overlay-fade-enter-from,
+.overlay-fade-leave-to { opacity: 0; }
 
 /* 404 — overrides the gradient when project not found */
 .work-detail--404 {
@@ -379,10 +489,12 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .work-detail__header  { padding: 1rem 1.5rem 2.5rem; }
-  .work-detail__gallery { padding: 0 1.5rem 3rem; gap: 0.75rem; }
-  .work-detail__title-row { gap: 0.9rem; }
-  .work-detail__logo    { width: 36px; height: 36px; }
-  .work-detail__meta    { gap: 2.5rem; }
+  .work-detail__header       { padding: 1rem 1.5rem 2.5rem; }
+  .work-detail__gallery      { padding: 0 1.5rem 3rem; gap: 0.75rem; }
+  .work-detail__video-section { padding: 0 1.5rem 3rem; }
+  .work-detail__play-btn     { width: 56px; height: 56px; }
+  .work-detail__title-row    { gap: 0.9rem; }
+  .work-detail__logo         { width: 36px; height: 36px; }
+  .work-detail__meta         { gap: 2.5rem; }
 }
 </style>
