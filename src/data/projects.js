@@ -63,7 +63,7 @@ From gemstone jewelry boxes to candle labels, bath salt packaging, paper bags, h
     industry: 'Fashion & Lifestyle',
     category: 'Brand Identity',
     tags: ['Brand Identity', 'Visual System', 'Brand Guidelines'],
-    logo: null,
+    logo: '/assets/images/portfolio/Branding/Sin A/sin_a logo.png',
     thumbnail: '/assets/images/portfolio/Branding/Sin A/01.png',
     coverImage: '/assets/images/portfolio/Branding/Sin A/01.png',
     images: [
@@ -303,7 +303,7 @@ Beyond the creative concept, Panlapan translated the campaign's visual direction
     industry: 'FMCG / Beverage',
     category: 'Video Production',
     tags: ['Visual Direction', 'Art Direction', 'Set Design', 'Video Production'],
-    logo: '/assets/images/portfolio/Photography/Cap Kaki Tiga/Logo cap kaki tiga.png',
+    logo: '/assets/images/portfolio/Photography/Cap Kaki Tiga/cap_kaki_tiga logo.png',
     thumbnail: '/assets/images/portfolio/Photography/Cap Kaki Tiga/Logo cap kaki tiga.png',
     coverImage: '/assets/images/portfolio/Photography/Cap Kaki Tiga/Logo cap kaki tiga.png',
     images: [],
@@ -331,7 +331,7 @@ Executed as a 360° campaign, the final assets were adapted across both offline 
     industry: 'Skincare & Beauty',
     category: 'Photography',
     tags: ['Photography', 'Art Direction', 'Product Photography'],
-    logo: '/assets/images/portfolio/Photography/Compounded by/00 Compounded By.PNG',
+    logo: '/assets/images/portfolio/Photography/Compounded by/compounded_by logo.png',
     thumbnail: '/assets/images/portfolio/Photography/Compounded by/01.png',
     coverImage: '/assets/images/portfolio/Photography/Compounded by/01.png',
     images: [
@@ -467,7 +467,7 @@ Designed with a 360-degree communication approach, the final assets were produce
     industry: 'Pet Care',
     category: 'Photography',
     tags: ['Photography', 'Art Direction', 'Product Photography'],
-    logo: '/assets/images/portfolio/Photography/Kiyowoof/00 logo koyowoof.JPG',
+    logo: '/assets/images/portfolio/Photography/Kiyowoof/kiyowoof logo.png',
     thumbnail: '/assets/images/portfolio/Photography/Kiyowoof/DSC08404.jpg',
     coverImage: '/assets/images/portfolio/Photography/Kiyowoof/DSC08404.jpg',
     images: [
@@ -498,7 +498,7 @@ Designed with a 360-degree communication approach, the final assets were produce
     industry: 'Food & Beverage',
     category: 'Photography',
     tags: ['Photography', 'Art Direction', 'Food & Beverage Photography'],
-    logo: '/assets/images/portfolio/Photography/LN Fortunate/00 LN fortunate logo.JPG',
+    logo: '/assets/images/portfolio/Photography/LN Fortunate/ln_fortunate logo.png',
     thumbnail: '/assets/images/portfolio/Photography/LN Fortunate/01.jpg',
     coverImage: '/assets/images/portfolio/Photography/LN Fortunate/01.jpg',
     images: [
@@ -528,7 +528,7 @@ Designed with a 360-degree communication approach, the final assets were produce
     industry: 'Beauty & Lifestyle',
     category: 'Photography',
     tags: ['Photography', 'Art Direction', 'Product Photography'],
-    logo: '/assets/images/portfolio/Photography/Love Merci/00 love merci logo.PNG',
+    logo: '/assets/images/portfolio/Photography/Love Merci/love_merci logo.png',
     thumbnail: '/assets/images/portfolio/Photography/Love Merci/01.png',
     coverImage: '/assets/images/portfolio/Photography/Love Merci/01.png',
     images: [
@@ -558,7 +558,7 @@ Designed with a 360-degree communication approach, the final assets were produce
     industry: 'Beauty & Skincare',
     category: 'Video Production',
     tags: ['Visual Direction', 'Art Direction', 'Set Design', 'Video Production', 'Campaign'],
-    logo: '/assets/images/portfolio/Photography/Ovale/Logo Ovale.png',
+    logo: '/assets/images/portfolio/Photography/Ovale/ovale logo.png',
     thumbnail: '/assets/images/portfolio/Photography/Ovale/Logo Ovale.png',
     coverImage: '/assets/images/portfolio/Photography/Ovale/Logo Ovale.png',
     images: [],
