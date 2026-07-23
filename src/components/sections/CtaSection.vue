@@ -21,7 +21,7 @@
 
     <!-- Full-width gradient band with CTA button -->
     <div class="cta__band" ref="bandRef">
-      <a href="mailto:hello@panlapan.com" class="cta__btn" ref="ctaBtnRef" data-cursor-hover>
+      <a href="https://wa.me/6281234521089" target="_blank" rel="noopener" class="cta__btn" ref="ctaBtnRef" data-cursor-hover>
         Start Your Journey
       </a>
     </div>
