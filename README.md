@@ -41,19 +41,25 @@ panlapan/
 │   │   │   ├── TheNavbar.vue   # Top navigation
 │   │   │   └── TheFooter.vue   # Footer
 │   │   ├── sections/
-│   │   │   ├── HeroSection.vue      # Homepage hero
-│   │   │   ├── WorksSection.vue     # Selected works / portfolio list
-│   │   │   ├── ServicesSection.vue  # Services list
-│   │   │   ├── ApproachSection.vue  # Our process / approach
-│   │   │   ├── WhySection.vue       # Why Panlapan
-│   │   │   └── CtaSection.vue       # Get in touch / CTA
+│   │   │   ├── HeroSection.vue         # Homepage hero
+│   │   │   ├── WorksSection.vue        # Selected works / portfolio list
+│   │   │   ├── ServicesSection.vue     # Services list
+│   │   │   ├── ApproachSection.vue     # Our process / approach
+│   │   │   ├── WhySection.vue          # Why Panlapan
+│   │   │   ├── CtaSection.vue          # Get in touch / CTA
+│   │   │   ├── StatsSection.vue        # (hidden) Client outcomes / stats
+│   │   │   ├── AboutSection.vue        # (hidden) About
+│   │   │   └── TestimonialsSection.vue # (hidden) Testimonials
 │   │   └── ui/
 │   │       └── CustomCursor.vue     # Custom cursor
 │   │
 │   ├── composables/
-│   │   ├── useLenis.js         # Smooth scroll setup
-│   │   ├── useCustomCursor.js  # Cursor animation logic
-│   │   └── useScrollAnimations.js  # Reusable GSAP animations
+│   │   ├── useLenis.js             # Smooth scroll setup
+│   │   ├── useCustomCursor.js      # Cursor animation logic
+│   │   ├── useScrollAnimations.js  # Reusable GSAP animations
+│   │   ├── useTextReveal.js        # Line/word reveal animation
+│   │   ├── useParallax.js          # Scroll parallax effect
+│   │   └── useMagnet.js            # Magnetic button hover effect
 │   │
 │   ├── data/
 │   │   └── projects.js         # ← EDIT INI untuk tambah project
@@ -82,11 +88,12 @@ panlapan/
 | Library | Version | Purpose |
 |---------|---------|---------|
 | Vue 3 | ^3.4 | Core framework (Composition API) |
-| Vite | ^5.2 | Build tool |
+| Vite | ^6.0 | Build tool |
 | Vue Router | ^4.3 | Client-side routing |
 | GSAP | ^3.12 | Animations (scroll, reveal, cursor) |
-| Lenis | ^1.0 | Smooth scroll |
+| Lenis | ^1.3 | Smooth scroll |
 | Tailwind CSS | ^3.4 | Utility styling |
+| Lucide | ^1.0 | Icon set |
 
 ---
 
@@ -107,11 +114,11 @@ panlapan/
 
 ---
 
-## 📋 Next Steps
+## ➕ Menambah Project Baru
 
-1. Taruh font Century Gothic di `src/assets/fonts/`
-2. Taruh logo di `src/assets/icons/logo.svg`
-3. Taruh project images di `src/assets/images/portfolio/`
-4. Update data project di `src/data/projects.js`
-5. Update email & social links di `TheFooter.vue`
-6. Update email di `CtaSection.vue` (href="mailto:...")
+1. Taruh gambar project di `public/assets/images/portfolio/<Kategori>/<Nama Project>/`
+   - Pastikan **case nama file** persis sama antara file di folder dan path yang direferensikan di `projects.js` — hosting Linux itu case-sensitive, beda dengan Windows
+   - Resize gambar ke ukuran wajar sebelum upload (logo: maks ~800px, gambar galeri: maks ~2000px). File berdimensi puluhan-ribu pixel akan ditolak oleh CDN Hostinger dengan error "invalid source image"
+2. Tambah entry baru di `src/data/projects.js` (copy struktur entry yang sudah ada)
+3. Kalau project ada video, isi field `video` dan kosongkan `images: []`
+4. Jalankan `npm run dev` untuk cek tampilan lokal sebelum build & deploy
