@@ -278,6 +278,13 @@ onUnmounted(() => ctx?.revert())
 
 .hero__line { display: block; }
 
+/* Give descenders (g, y, j) room inside the overflow-hidden reveal mask
+   without shifting line spacing — pad the box, then pull it back with margin. */
+.hero__headline .text-reveal-wrapper {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
 /* Sub */
 .hero__sub {
   font-size: clamp(0.85rem, 1.4vw, 1rem);
