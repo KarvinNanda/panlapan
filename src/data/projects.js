@@ -630,8 +630,8 @@ From close-up beauty portraits to expressive hand compositions and product still
       '/assets/images/portfolio/Photography/Soothe Sensory/02.png',
       '/assets/images/portfolio/Photography/Soothe Sensory/03.png',
     ],
-    description: '',
-    fullDescription: '',
+    description: 'Refined, atmospheric product photography turning everyday self-care into a calming sensory ritual.',
+    fullDescription: 'Soothe Sensory is a soap and wellness brand designed to transform everyday self-care into a calming sensory ritual. Panlapan produced product photography that highlighted the brand\'s textures, ingredients, and tactile qualities—creating refined, atmospheric imagery that communicates softness, relaxation, and intentional care.',
     deliverables: [
       'Creative Direction',
       'Product Photography',
