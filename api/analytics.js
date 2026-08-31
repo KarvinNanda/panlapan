@@ -9,8 +9,8 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
 
-  const { POSTHOG_PERSONAL_API_KEY, VITE_POSTHOG_PROJECT_ID, VITE_POSTHOG_HOST } = process.env
-  const projectId = VITE_POSTHOG_PROJECT_ID
+  const { POSTHOG_PERSONAL_API_KEY, POSTHOG_PROJECT_ID, VITE_POSTHOG_HOST } = process.env
+  const projectId = POSTHOG_PROJECT_ID
 
   if (!POSTHOG_PERSONAL_API_KEY || !projectId) {
     return res.status(500).json({ error: 'PostHog server env vars belum di-set' })
