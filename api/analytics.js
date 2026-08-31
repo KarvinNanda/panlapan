@@ -57,8 +57,8 @@ export default async function handler(req, res) {
       getCount(['cta_whatsapp_clicked', 'cta_scroll_clicked']),
     ])
 
-    // Cache 60 detik — supaya gak query PostHog tiap kali orang buka web
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
+    // Cache 15 detik — cukup responsif tapi tetap nyegah spam query ke PostHog
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate')
     return res.status(200).json({ pageviews, ctaClicks })
   } catch (err) {
     console.error('PostHog query failed:', err)
