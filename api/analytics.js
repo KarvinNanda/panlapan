@@ -48,27 +48,18 @@ export default async function handler(req, res) {
     })
     const data = await r.json()
     if (!r.ok) console.error('PostHog API error:', JSON.stringify(data))
-    return { count: data.results?.[0]?.[0] ?? 0, raw: data, ok: r.ok, status: r.status }
+    return data.results?.[0]?.[0] ?? 0
   }
 
   try {
-    const [pv, cta] = await Promise.all([
+    const [pageviews, ctaClicks] = await Promise.all([
       getCount('$pageview'),
       getCount(['cta_whatsapp_clicked', 'cta_scroll_clicked']),
     ])
 
-    // TEMP DEBUG — hapus setelah ketemu penyebab ctaClicks selalu 0
-    // No-cache khusus selama debug, biar gak ketutup cache lama
-    res.setHeader('Cache-Control', 'no-store')
-    return res.status(200).json({
-      pageviews: pv.count,
-      ctaClicks: cta.count,
-      _debug: {
-        projectId,
-        appHost,
-        ctaQuery: { ok: cta.ok, status: cta.status, raw: cta.raw },
-      },
-    })
+    // Cache 60 detik — supaya gak query PostHog tiap kali orang buka web
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate')
+    return res.status(200).json({ pageviews, ctaClicks })
   } catch (err) {
     console.error('PostHog query failed:', err)
     return res.status(500).json({ error: 'Failed to fetch analytics' })
