@@ -37,15 +37,15 @@
       <p class="footer__tagline">Strategy. Creativity. Growth.</p>
       <p class="footer__sub">Turning Ideas into Impactful Creations.</p>
 
-      <!-- Live visitor counter -->
-      <VisitorCounter />
-
     </div>
+
+    <!-- Live telemetry -->
+    <TelemetrySection />
   </footer>
 </template>
 
 <script setup>
-import VisitorCounter from '@/components/ui/VisitorCounter.vue'
+import TelemetrySection from '@/components/ui/TelemetrySection.vue'
 </script>
 
 <style scoped>
@@ -58,6 +58,14 @@ import VisitorCounter from '@/components/ui/VisitorCounter.vue'
 
 .footer__gradient {
   display: none;
+}
+
+:deep(.telemetry) {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .footer__inner {
@@ -124,5 +132,6 @@ import VisitorCounter from '@/components/ui/VisitorCounter.vue'
 
 @media (max-width: 768px) {
   .footer__inner { padding: 4rem 1.5rem 1rem; }
+  :deep(.telemetry) { padding: 0 1.5rem; }
 }
 </style>
