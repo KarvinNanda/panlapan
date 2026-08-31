@@ -37,11 +37,15 @@
       <p class="footer__tagline">Strategy. Creativity. Growth.</p>
       <p class="footer__sub">Turning Ideas into Impactful Creations.</p>
 
+      <!-- Live visitor counter -->
+      <VisitorCounter />
+
     </div>
   </footer>
 </template>
 
 <script setup>
+import VisitorCounter from '@/components/ui/VisitorCounter.vue'
 </script>
 
 <style scoped>

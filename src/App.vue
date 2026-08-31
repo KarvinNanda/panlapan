@@ -32,6 +32,7 @@ import CustomCursor from '@/components/ui/CustomCursor.vue'
 import TheNavbar from '@/components/layout/TheNavbar.vue'
 import TheFooter from '@/components/layout/TheFooter.vue'
 import { useLenis } from '@/composables/useLenis.js'
+import { posthog } from '@/main.js'
 
 useLenis()
 
@@ -42,15 +43,22 @@ const introRef  = ref(null)
 
 onMounted(() => {
   const panels = introRef.value?.querySelectorAll('.intro-curtain__panel')
-  if (!panels?.length) return
-  gsap.to(panels, {
-    yPercent: -100,
-    duration: 1.0,
-    stagger: { amount: 0.3, from: 'center' },
-    ease: 'power4.inOut',
-    delay: 0.15,
-    onComplete: () => { showIntro.value = false }
-  })
+  if (panels?.length) {
+    gsap.to(panels, {
+      yPercent: -100,
+      duration: 1.0,
+      stagger: { amount: 0.3, from: 'center' },
+      ease: 'power4.inOut',
+      delay: 0.15,
+      onComplete: () => { showIntro.value = false }
+    })
+  }
+
+  // Capture pageview untuk initial load — route watch di bawah cuma
+  // nangkep perpindahan halaman berikutnya (SPA), bukan load pertama
+  if (posthog.__loaded) {
+    posthog.capture('$pageview', { $current_url: window.location.href })
+  }
 })
 
 // On every route change: kill stale triggers → scroll to top → refresh after new page mounts
@@ -61,6 +69,11 @@ watch(() => route.path, (newPath, oldPath) => {
   window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   // Wait for leave transition (500ms) + component mount before refresh
   setTimeout(() => ScrollTrigger.refresh(), 600)
+
+  // Capture pageview ke PostHog setiap pindah halaman (SPA)
+  if (posthog.__loaded) {
+    posthog.capture('$pageview', { $current_url: window.location.href })
+  }
 })
 </script>
 
