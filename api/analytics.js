@@ -4,7 +4,11 @@
 //
 // Query 2 metric ke PostHog via HogQL Query API:
 //   - pageviews : total $pageview 30 hari terakhir
-//   - ctaClicks : total klik CTA "Start Your Journey" (WhatsApp) 30 hari terakhir
+//   - ctaClicks : total klik semua CTA yang ngarah ke #connect (30 hari terakhir)
+//                 gabungan 2 event:
+//                 - cta_whatsapp_clicked : klik "Start Your Journey" (CtaSection, langsung buka WA)
+//                 - cta_scroll_clicked   : klik "Start a Project"/"panlapan" (navbar, WorksSection,
+//                                          ServicesSection — cuma scroll ke #connect)
 // ================================================
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -25,7 +29,9 @@ export default async function handler(req, res) {
     ? ingestHost.replace('.i.posthog.com', '.posthog.com')
     : ingestHost
 
-  async function getCount(eventName) {
+  async function getCount(eventNames) {
+    const names = Array.isArray(eventNames) ? eventNames : [eventNames]
+    const inList = names.map(n => `'${n}'`).join(', ')
     const url = `${appHost}/api/projects/${projectId}/query/`
     const r = await fetch(url, {
       method: 'POST',
@@ -36,7 +42,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         query: {
           kind: 'HogQLQuery',
-          query: `SELECT count() FROM events WHERE event = '${eventName}' AND timestamp >= now() - INTERVAL 30 DAY`,
+          query: `SELECT count() FROM events WHERE event IN (${inList}) AND timestamp >= now() - INTERVAL 30 DAY`,
         },
       }),
     })
@@ -48,7 +54,7 @@ export default async function handler(req, res) {
   try {
     const [pv, cta] = await Promise.all([
       getCount('$pageview'),
-      getCount('cta_whatsapp_clicked'),
+      getCount(['cta_whatsapp_clicked', 'cta_scroll_clicked']),
     ])
 
     // TEMP DEBUG — hapus setelah ketemu penyebab ctaClicks selalu 0

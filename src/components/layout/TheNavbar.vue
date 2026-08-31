@@ -78,6 +78,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
+import { posthog } from '@/main.js'
 
 const route = useRoute()
 const isDetailPage = computed(() => route.path.startsWith('/work/'))
@@ -99,6 +100,8 @@ const navItems = [
 const scrollToSection = (id) => {
   const el = document.getElementById(id)
   if (el) el.scrollIntoView({ behavior: 'smooth' })
+  // Cuma track klik "Start a Project" (target #connect), bukan nav item biasa (Work/Services/About)
+  if (id === 'connect' && posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
 const mobileScrollTo = (id) => {

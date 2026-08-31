@@ -51,6 +51,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
+import { posthog } from '@/main.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -68,6 +69,7 @@ const scrollToHero = () => {
 
 const scrollToConnect = () => {
   document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })
+  if (posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
 const services = [
