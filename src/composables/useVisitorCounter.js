@@ -1,21 +1,24 @@
 // ================================================
-// useVisitorCounter — Live visit counter via PostHog (lewat serverless proxy)
+// useVisitorCounter — Live pageviews + CTA click count via PostHog
+// (lewat serverless proxy /api/analytics)
 // ================================================
 import { ref, onMounted } from 'vue'
 
 export function useVisitorCounter() {
-  const count     = ref(null)
+  const pageviews = ref(null)
+  const ctaClicks = ref(null)
   const isLoading = ref(true)
   const hasError  = ref(false)
 
   const fetchCount = async () => {
     try {
-      const res  = await fetch('/api/pageviews')
+      const res  = await fetch('/api/analytics')
       const data = await res.json()
 
       if (data.error) throw new Error(data.error)
 
-      count.value = data.total ?? 0
+      pageviews.value = data.pageviews ?? 0
+      ctaClicks.value = data.ctaClicks ?? 0
     } catch (err) {
       hasError.value = true
       console.warn('Visitor counter unavailable:', err)
@@ -28,5 +31,5 @@ export function useVisitorCounter() {
     fetchCount()
   })
 
-  return { count, isLoading, hasError }
+  return { pageviews, ctaClicks, isLoading, hasError }
 }

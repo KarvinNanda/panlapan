@@ -21,7 +21,7 @@
 
     <!-- Full-width gradient band with CTA button -->
     <div class="cta__band" ref="bandRef">
-      <a href="https://wa.me/6281234521089" target="_blank" rel="noopener" class="cta__btn" ref="ctaBtnRef" data-cursor-hover>
+      <a href="https://wa.me/6281234521089" target="_blank" rel="noopener" class="cta__btn" ref="ctaBtnRef" data-cursor-hover @click="trackCtaClick">
         Start Your Journey
       </a>
     </div>
@@ -34,6 +34,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
+import { posthog } from '@/main.js'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -43,6 +44,12 @@ const sectionRef = ref(null)
 const textRef    = ref(null)
 const bandRef    = ref(null)
 const ctaBtnRef  = ref(null)
+
+const trackCtaClick = () => {
+  if (posthog.__loaded) {
+    posthog.capture('cta_whatsapp_clicked')
+  }
+}
 
 let ctx = null
 

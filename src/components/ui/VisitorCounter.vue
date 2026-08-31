@@ -1,8 +1,10 @@
 <template>
-  <div v-if="!hasError && (isLoading || count !== null)" class="visitor-counter">
+  <div v-if="!hasError && (isLoading || pageviews !== null)" class="visitor-counter">
     <span class="visitor-counter__dot" />
-    <span v-if="isLoading" class="visitor-counter__text">Loading visits…</span>
-    <span v-else class="visitor-counter__text">{{ formattedCount }} visits</span>
+    <span v-if="isLoading" class="visitor-counter__text">Loading stats…</span>
+    <span v-else class="visitor-counter__text">
+      {{ formattedPageviews }} visits · {{ formattedCtaClicks }} inquiries
+    </span>
   </div>
 </template>
 
@@ -10,12 +12,10 @@
 import { computed } from 'vue'
 import { useVisitorCounter } from '@/composables/useVisitorCounter.js'
 
-const { count, isLoading, hasError } = useVisitorCounter()
+const { pageviews, ctaClicks, isLoading, hasError } = useVisitorCounter()
 
-const formattedCount = computed(() => {
-  if (count.value === null) return '0'
-  return count.value.toLocaleString('en-US')
-})
+const formattedPageviews = computed(() => (pageviews.value ?? 0).toLocaleString('en-US'))
+const formattedCtaClicks = computed(() => (ctaClicks.value ?? 0).toLocaleString('en-US'))
 </script>
 
 <style scoped>
