@@ -1,0 +1,27 @@
+# ============================================================
+# .htaccess — Panlapan (Vue SPA + PostHog analytics proxy)
+# ============================================================
+
+# ── Secrets buat api/analytics.php ─────────────────────────
+# GANTI value di bawah ini dengan value ASLI dari PostHog kamu
+# LANGSUNG di file .htaccess yang ada di server Hostinger.
+# JANGAN commit value asli ini ke git — biarkan placeholder di
+# repo, isi yang sebenarnya cuma ada di server.
+<IfModule mod_env.c>
+  SetEnv POSTHOG_PERSONAL_API_KEY "REPLACE_WITH_REAL_PERSONAL_API_KEY"
+  SetEnv POSTHOG_PROJECT_ID "REPLACE_WITH_REAL_PROJECT_ID"
+</IfModule>
+
+# ── Route /api/analytics (tanpa ekstensi) ke file PHP-nya ──
+<IfModule mod_rewrite.module>
+  RewriteEngine On
+  RewriteBase /
+
+  RewriteRule ^api/analytics$ api/analytics.php [L]
+
+  # ── SPA fallback — biarin Vue Router yang urus routing ────
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
