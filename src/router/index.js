@@ -1,10 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
+// ================================================
+// Routes — di-export sebagai ARRAY (bukan instance router).
+// vite-ssg yang bikin instance router-nya sendiri dari array ini,
+// baik saat build (memory history) maupun di browser (web history).
+// ================================================
 
 // Lazy-loaded views for performance
 const HomeView = () => import('@/views/HomeView.vue')
 const WorkDetailView = () => import('@/views/WorkDetailView.vue')
 
-const routes = [
+export const routes = [
   {
     path: '/',
     name: 'home',
@@ -24,18 +28,10 @@ const routes = [
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
-    return { top: 0, left: 0, behavior: 'instant' }
-  }
-})
+// Dipisah supaya bisa dioper apa adanya ke ViteSSG di main.js
+export function scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) return savedPosition
+  return { top: 0, left: 0, behavior: 'instant' }
+}
 
-// Update page title on route change
-router.beforeEach((to) => {
-  document.title = to.meta.title || 'Panlapan Creative Lab'
-})
-
-export default router
+export default routes
