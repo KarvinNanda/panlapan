@@ -98,14 +98,15 @@ useHead({
 // Semua nilai di bawah ini diambil dari yang MEMANG ada di repo:
 //   email    → mailto: di TheFooter.vue
 //   sameAs   → link sosmed di TheFooter.vue
-//   logo     → file nyata di public/assets/images/
+//   logo     → Icon Logo Full Orange (Google menampilkan logo di atas putih,
+//              jadi versi putih tidak terbaca; primary logo cuma ada versi putih)
 //   knowsAbout → category + tags di src/data/projects.js
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: 'Panlapan Creative Lab',
   url: SITE,
-  logo: `${SITE}${encodeURI('/assets/images/6-9-2026 - Primary Logo Panlapan - White.png')}`,
+  logo: `${SITE}${encodeURI('/assets/images/6-9-2026 - Icon Logo Panlapan - Full Orange.png')}`,
   image: OG_IMAGE,
   description: DESC,
   slogan: 'Turning Ideas into Impactful Creations.',
@@ -116,7 +117,6 @@ const jsonLd = {
   ],
   knowsAbout: [
     'Brand Strategy & Identity',
-    'Brand Identity',
     'Packaging Design',
     'Interior Design',
     'Art Direction',
