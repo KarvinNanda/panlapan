@@ -9,7 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 export const createApp = ViteSSG(
   App,
   { routes, scrollBehavior },
-  ({ router, isClient }) => {
+  ({ isClient }) => {
     // Semua di bawah ini butuh browser API (window/document/history),
     // jadi hanya jalan di client — saat build SSG, blok ini dilewati.
     if (!isClient) return
@@ -35,11 +35,6 @@ export const createApp = ViteSSG(
       history.scrollRestoration = 'manual'
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-
-    // Update page title on route change
-    router.beforeEach((to) => {
-      document.title = to.meta.title || 'Panlapan Creative Lab'
-    })
   },
 )
 

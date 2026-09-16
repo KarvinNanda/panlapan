@@ -112,6 +112,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useTextReveal } from '@/composables/useTextReveal.js'
@@ -126,6 +127,51 @@ const descParagraphs = computed(() => {
   const text = project.value?.fullDescription || project.value?.description || ''
   return text.split(/\n\n+/).filter(Boolean)
 })
+
+// ── SEO — semua diambil dari data project yang sedang dibuka ──────
+const SITE = 'https://panlapan.com'
+
+// Path gambar di projects.js mengandung spasi, jadi wajib di-encode
+// supaya URL og:image-nya valid saat di-scrape.
+const absUrl = (path) => (path ? SITE + encodeURI(path) : '')
+
+const seoTitle = computed(() =>
+  project.value
+    ? `${project.value.title} — Panlapan Creative Lab`
+    : 'Project Not Found — Panlapan Creative Lab'
+)
+
+const seoDesc = computed(() =>
+  project.value ? project.value.description : 'The project you are looking for is no longer available.'
+)
+
+const seoUrl = computed(() =>
+  project.value ? `${SITE}/work/${project.value.slug}` : `${SITE}/`
+)
+
+useHead(() => ({
+  title: seoTitle.value,
+  meta: [
+    { name: 'description', content: seoDesc.value },
+    // Halaman 404 jangan diindeks
+    ...(project.value ? [] : [{ name: 'robots', content: 'noindex, follow' }]),
+
+    { property: 'og:type',        content: 'article' },
+    { property: 'og:site_name',   content: 'Panlapan Creative Lab' },
+    { property: 'og:title',       content: seoTitle.value },
+    { property: 'og:description', content: seoDesc.value },
+    { property: 'og:url',         content: seoUrl.value },
+    ...(project.value ? [{ property: 'og:image', content: absUrl(project.value.coverImage) }] : []),
+
+    { name: 'twitter:card',        content: 'summary_large_image' },
+    { name: 'twitter:title',       content: seoTitle.value },
+    { name: 'twitter:description', content: seoDesc.value },
+    ...(project.value ? [{ name: 'twitter:image', content: absUrl(project.value.coverImage) }] : []),
+  ],
+  link: [
+    { rel: 'canonical', href: seoUrl.value },
+  ],
+}))
 
 const progressRef    = ref(null)
 const backRef        = ref(null)
