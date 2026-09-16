@@ -66,8 +66,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const heroRef     = ref(null)
 const wordmarkRef = ref(null)
 const headlineRef = ref(null)

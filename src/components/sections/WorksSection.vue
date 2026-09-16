@@ -115,8 +115,6 @@ import projectsRaw from '@/data/projects.js'
 
 const projects = [...projectsRaw].sort((a, b) => a.title.localeCompare(b.title))
 
-gsap.registerPlugin(ScrollTrigger)
-
 const { attach: magnet } = useMagnet()
 const { revealText } = useTextReveal()
 

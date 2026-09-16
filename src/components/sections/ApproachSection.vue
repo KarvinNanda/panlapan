@@ -46,8 +46,6 @@ import {
   Package2
 } from '@lucide/vue'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const sectionRef = ref(null)
 const headerRef  = ref(null)
 const stepsRef   = ref(null)

@@ -117,8 +117,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useTextReveal } from '@/composables/useTextReveal.js'
 import { getProjectBySlug } from '@/data/projects.js'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const { revealText } = useTextReveal()
 
 const route = useRoute()

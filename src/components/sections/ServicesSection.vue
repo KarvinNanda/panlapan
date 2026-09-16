@@ -53,8 +53,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
 import { posthog } from '@/main.js'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const { attach: magnet } = useMagnet()
 
 const sectionRef   = ref(null)

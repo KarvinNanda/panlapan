@@ -13,6 +13,9 @@ export default defineConfig({
   ssgOptions: {
     script: 'async',
     formatting: 'minify',
+    // /work/<slug>/index.html, bukan /work/<slug>.html — supaya URL bersih
+    // tanpa ekstensi tetap kebaca Apache lewat aturan di public/.htaccess
+    dirStyle: 'nested',
     includedRoutes() {
       // Homepage + satu halaman statis per project di src/data/projects.js.
       // Catch-all route (/:pathMatch) sengaja tidak di-generate.
