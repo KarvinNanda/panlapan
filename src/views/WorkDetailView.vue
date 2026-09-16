@@ -90,7 +90,7 @@
       >
         <img
           :src="img"
-          :alt="`${project.title} — Image ${i + 1}`"
+          :alt="`${project.title} — ${project.category} by Panlapan Creative Lab (${i + 1} of ${project.images.length})`"
           class="work-detail__image"
           loading="lazy"
         />

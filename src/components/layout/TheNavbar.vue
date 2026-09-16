@@ -7,7 +7,7 @@
           LOGO FILE — taruh file di: public/assets/icons/panlapan-logo.png
           Uncomment <img> dan hapus placeholder <div> setelah file siap
         -->
-        <img src="/assets/images/6-9-2026 - Icon Logo Panlapan - White.png" alt="Panlapan" class="navbar__logo-img" />
+        <img src="/assets/images/6-9-2026 - Icon Logo Panlapan - White.png" alt="Panlapan Creative Lab" class="navbar__logo-img" />
 
         <!-- PLACEHOLDER — hapus setelah logo file siap -->
         <!-- <div class="navbar__logo-placeholder">

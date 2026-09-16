@@ -92,4 +92,56 @@ useHead({
     { rel: 'canonical', href: `${SITE}/` },
   ],
 })
+
+// ── JSON-LD ───────────────────────────────────────────────────
+// Semua nilai di bawah ini diambil dari yang MEMANG ada di repo:
+//   email    → mailto: di TheFooter.vue
+//   telephone→ link wa.me di CtaSection.vue
+//   sameAs   → link sosmed di TheFooter.vue
+//   logo     → file nyata di public/assets/images/
+//   knowsAbout → category + tags di src/data/projects.js
+// Yang tidak ada sumbernya ditinggal sebagai <<<ISI: ...>>>.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: 'Panlapan Creative Lab',
+  url: SITE,
+  logo: `${SITE}${encodeURI('/assets/images/6-9-2026 - Primary Logo Panlapan - White.png')}`,
+  image: OG_IMAGE,
+  description: DESC,
+  slogan: 'Turning Ideas into Impactful Creations.',
+  email: 'hello@panlapan.com',
+  telephone: '+628811604210',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress:   '<<<ISI: alamat jalan kantor Panlapan>>>',
+    addressLocality: '<<<ISI: kota, mis. Jakarta Selatan>>>',
+    addressRegion:   '<<<ISI: provinsi, mis. DKI Jakarta>>>',
+    postalCode:      '<<<ISI: kode pos>>>',
+    addressCountry:  '<<<ISI: kode negara 2 huruf, mis. ID>>>',
+  },
+  areaServed: '<<<ISI: wilayah layanan, mis. Indonesia — tidak ada sumbernya di repo>>>',
+  sameAs: [
+    'https://www.instagram.com/panlapancreative/',
+    'https://linkedin.com/company/panlapan',
+  ],
+  knowsAbout: [
+    'Brand Strategy & Identity',
+    'Brand Identity',
+    'Packaging Design',
+    'Interior Design',
+    'Art Direction',
+    'Photography',
+    'Visual System',
+    'Environmental Branding',
+    'Product Photography',
+    'Video Production',
+  ],
+}
+
+useHead({
+  script: [
+    { type: 'application/ld+json', innerHTML: JSON.stringify(jsonLd) },
+  ],
+})
 </script>

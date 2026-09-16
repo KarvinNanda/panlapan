@@ -38,7 +38,7 @@
               <div class="works__card-parallax" data-parallax>
                 <img
                   :src="img"
-                  :alt="`${project.title} ${i + 1}`"
+                  :alt="`${project.title} — ${project.category} by Panlapan Creative Lab`"
                   class="works__card-img"
                   loading="lazy"
                 />
@@ -62,7 +62,7 @@
                 <img
                   v-if="project.logo"
                   :src="project.logo"
-                  :alt="project.title"
+                  :alt="`${project.title} logo`"
                   class="works__card-logo"
                 />
                 <h3 class="works__card-title">{{ project.title }}</h3>
