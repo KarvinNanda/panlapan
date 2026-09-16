@@ -1,5 +1,6 @@
 # ============================================================
-# .htaccess — Panlapan (Vue SPA + PostHog analytics proxy)
+# .htaccess — Panlapan (Vue SPA pre-rendered via vite-ssg
+#              + PostHog analytics proxy)
 # ============================================================
 
 # ── Secrets buat api/analytics.php ─────────────────────────
@@ -12,16 +13,36 @@
   SetEnv POSTHOG_PROJECT_ID "REPLACE_WITH_REAL_PROJECT_ID"
 </IfModule>
 
-# ── Route /api/analytics (tanpa ekstensi) ke file PHP-nya ──
-<IfModule mod_rewrite.module>
+<IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
+  # ── Route /api/analytics (tanpa ekstensi) ke file PHP-nya ──
+  # Harus paling atas: kalau kena aturan file-first di bawah,
+  # request tanpa ekstensi ini nggak akan pernah nyampe ke PHP.
   RewriteRule ^api/analytics$ api/analytics.php [L]
 
-  # ── SPA fallback — biarin Vue Router yang urus routing ────
-  RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  # ── 1. File yang memang ada → sajikan apa adanya ───────────
+  # Ini yang bikin /robots.txt dan /sitemap.xml balik sebagai
+  # file aslinya, bukan index.html.
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^ - [L]
+
+  # ── 2. /work/<slug> → /work/<slug>/index.html ──────────────
+  # Setelah SSG tiap route punya file HTML sendiri. Aturan ini
+  # sengaja ditaruh SEBELUM cek direktori supaya Apache menyajikan
+  # index.html-nya langsung, tanpa 301 nambahin trailing slash —
+  # kalau kena redirect, URL yang diakses (/work/nivea/) jadi beda
+  # dengan <link rel="canonical"> yang kita tulis (/work/nivea).
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.*)$ /$1/index.html [L]
+
+  # ── 3. Direktori lain → biarkan Apache yang urus ───────────
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # ── 4. Sisanya → SPA fallback ──────────────────────────────
+  # Route yang nggak ter-generate (mis. typo) ditangani Vue Router,
+  # yang akan redirect ke / lewat catch-all di src/router/index.js.
+  RewriteRule ^ /index.html [L]
 </IfModule>
