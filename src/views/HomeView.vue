@@ -68,8 +68,9 @@ import CtaSection      from '@/components/sections/CtaSection.vue'
 const SITE  = 'https://panlapan.com'
 const TITLE = 'Panlapan Creative Lab — Branding, Packaging & Photography'
 const DESC  = 'Panlapan Creative Lab helps businesses build brands, create demand, and grow — through brand identity, packaging, interior, photography, and art direction.'
-// Kartu social 1200×630 belum ada di repo — lihat daftar placeholder.
-const OG_IMAGE = '<<<ISI: URL absolut gambar Open Graph 1200×630 px untuk homepage, mis. https://panlapan.com/assets/images/og-home.jpg — filenya belum ada di public/assets/images/>>>'
+// sementara — ganti kalau kartu OG resmi dari designer sudah ada
+// (di-generate oleh scripts/generate-og-image.js, 1200×630)
+const OG_IMAGE = `${SITE}${encodeURI('/assets/images/og-home.jpg')}`
 
 useHead({
   title: TITLE,
@@ -96,11 +97,9 @@ useHead({
 // ── JSON-LD ───────────────────────────────────────────────────
 // Semua nilai di bawah ini diambil dari yang MEMANG ada di repo:
 //   email    → mailto: di TheFooter.vue
-//   telephone→ link wa.me di CtaSection.vue
 //   sameAs   → link sosmed di TheFooter.vue
 //   logo     → file nyata di public/assets/images/
 //   knowsAbout → category + tags di src/data/projects.js
-// Yang tidak ada sumbernya ditinggal sebagai <<<ISI: ...>>>.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
@@ -111,16 +110,6 @@ const jsonLd = {
   description: DESC,
   slogan: 'Turning Ideas into Impactful Creations.',
   email: 'hello@panlapan.com',
-  telephone: '+628811604210',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress:   '<<<ISI: alamat jalan kantor Panlapan>>>',
-    addressLocality: '<<<ISI: kota, mis. Jakarta Selatan>>>',
-    addressRegion:   '<<<ISI: provinsi, mis. DKI Jakarta>>>',
-    postalCode:      '<<<ISI: kode pos>>>',
-    addressCountry:  '<<<ISI: kode negara 2 huruf, mis. ID>>>',
-  },
-  areaServed: '<<<ISI: wilayah layanan, mis. Indonesia — tidak ada sumbernya di repo>>>',
   sameAs: [
     'https://www.instagram.com/panlapancreative/',
     'https://linkedin.com/company/panlapan',
