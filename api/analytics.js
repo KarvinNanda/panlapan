@@ -25,9 +25,17 @@ export default async function handler(req, res) {
   // Derive app host dari VITE_POSTHOG_HOST kalau formatnya ingestion PostHog Cloud,
   // fallback ke host apa adanya kalau self-hosted (biasanya satu domain buat semua).
   const ingestHost = VITE_POSTHOG_HOST || 'https://us.i.posthog.com'
-  const appHost = ingestHost.includes('.i.posthog.com')
-    ? ingestHost.replace('.i.posthog.com', '.posthog.com')
-    : ingestHost
+  let appHost
+  try {
+    const parsedIngestHost = new URL(ingestHost)
+    const host = parsedIngestHost.hostname
+    if (host === 'us.i.posthog.com' || host.endsWith('.i.posthog.com')) {
+      parsedIngestHost.hostname = host.replace(/\.i\.posthog\.com$/, '.posthog.com')
+    }
+    appHost = parsedIngestHost.origin
+  } catch {
+    appHost = 'https://us.posthog.com'
+  }
 
   async function getCount(eventNames) {
     const names = Array.isArray(eventNames) ? eventNames : [eventNames]
