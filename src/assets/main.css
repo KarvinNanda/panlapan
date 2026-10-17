@@ -152,7 +152,8 @@ html.has-custom-cursor * {
   border-color: var(--color-white);
 }
 
-.cursor-ring.is-down .cursor-ring__circle         { transform: scale(0.42); }
+.cursor-ring.is-down .cursor-ring__circle          { transform: scale(0.42); }
+.cursor-ring.is-hover.is-down .cursor-ring__circle { transform: scale(0.6); }
 .cursor-ring.is-view.is-down .cursor-ring__circle { transform: scale(0.9); }
 
 .cursor-text {

@@ -37,7 +37,8 @@ export function useCustomCursor() {
 
   const releaseMagnet = () => {
     if (!magnetEl) return
-    gsap.to(magnetEl, { x: 0, y: 0, duration: DUR.base, ease: EASE.out, overwrite: 'auto' })
+    // clearProps: sisa inline transform mengalahkan CSS :hover lift & :active press tombol
+    gsap.to(magnetEl, { x: 0, y: 0, duration: DUR.base, ease: EASE.out, overwrite: 'auto', clearProps: 'transform' })
     magnetEl = null
   }
 
