@@ -233,6 +233,17 @@ html.lenis {
   display: block;
 }
 
+/* Transform tidak berlaku di elemen inline — baris yang di-reveal harus block */
+.text-reveal-wrapper > .reveal-target {
+  display: block;
+}
+
+/* Beri ruang descender (g, y, p) di dalam mask tanpa menggeser layout */
+.text-reveal-wrapper--descender {
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
 .will-animate {
   opacity: 0;
   transform: translateY(30px);

@@ -4,7 +4,9 @@
 
       <!-- Header: h2 dulu, lalu eyebrow di bawah (mobile: centered) -->
       <div class="services__header" ref="headerRef">
-        <h2 class="services__headline">Services</h2>
+        <h2 class="services__headline">
+          <span class="text-reveal-wrapper"><span class="reveal-target">Services</span></span>
+        </h2>
         <span class="eyebrow services__what">What We Do</span>
       </div>
 
@@ -47,9 +49,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
+import { EASE, DUR, STAGGER } from '@/motion/tokens.js'
 import { posthog } from '@/main.js'
 import { scrollToTarget } from '@/motion/scrollTo.js'
 
@@ -95,33 +100,18 @@ const services = [
   }
 ]
 
-let ctx = null
+useMotion(sectionRef, () => {
+  revealLines(headerRef.value?.querySelectorAll('.reveal-target'), { trigger: headerRef.value, start: 'top 80%' })
+  fadeUp(headerRef.value?.querySelector('.eyebrow'), { trigger: headerRef.value, delay: 0.15, start: 'top 80%' })
 
-onMounted(() => {
-  ctx = gsap.context(() => {
-    gsap.fromTo(
-      headerRef.value?.querySelectorAll('h2, .eyebrow'),
-      { opacity: 0, y: 25 },
-      { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-    )
-    gsap.fromTo(dividerRef.value,
-      { scaleX: 0, transformOrigin: 'left' },
-      { scaleX: 1, duration: 1.2, ease: 'power4.inOut',
-        scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
-    )
-    const items = gridRef.value?.querySelectorAll('.service-item')
-    if (items?.length) {
-      gsap.fromTo(items,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: gridRef.value, start: 'top 80%' } }
-      )
-    }
-  })
+  gsap.fromTo(dividerRef.value,
+    { scaleX: 0, transformOrigin: 'left' },
+    { scaleX: 1, duration: DUR.reveal, ease: EASE.inOut,
+      scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
+  )
+
+  fadeUp(gridRef.value?.querySelectorAll('.service-item'), { trigger: gridRef.value, y: 24, stagger: STAGGER.tight, start: 'top 80%' })
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

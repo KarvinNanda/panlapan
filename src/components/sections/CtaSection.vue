@@ -5,8 +5,8 @@
       <!-- Main text block -->
       <div class="cta__text" ref="textRef">
         <h2 class="cta__headline">
-          Let's Build Something<br>
-          That Works.
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Let's Build Something</span></span>
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">That Works.</span></span>
         </h2>
         <p class="cta__body">
           Not just something that looks good.<br>
@@ -30,9 +30,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ref } from 'vue'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
 import { posthog } from '@/main.js'
 
 const sectionRef = ref(null)
@@ -46,26 +46,12 @@ const trackCtaClick = () => {
   }
 }
 
-let ctx = null
-
-onMounted(() => {
-  ctx = gsap.context(() => {
-    gsap.fromTo(
-      textRef.value?.querySelectorAll('.cta__headline, .cta__body, .cta__impact'),
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: textRef.value, start: 'top 80%' } }
-    )
-    gsap.fromTo(
-      ctaBtnRef.value,
-      { opacity: 0, y: 25 },
-      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: bandRef.value, start: 'top 85%' } }
-    )
-  })
+useMotion(sectionRef, () => {
+  const textOpts = { trigger: textRef.value, start: 'top 80%' }
+  revealLines(textRef.value?.querySelectorAll('.cta__headline .reveal-target'), textOpts)
+  fadeUp(textRef.value?.querySelectorAll('.cta__body, .cta__impact'), { ...textOpts, delay: 0.3 })
+  fadeUp(ctaBtnRef.value, { trigger: bandRef.value, start: 'top 85%' })
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

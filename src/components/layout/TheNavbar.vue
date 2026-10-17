@@ -80,6 +80,8 @@ import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { posthog } from '@/main.js'
 import { scrollToTarget } from '@/motion/scrollTo.js'
+import { useMotion } from '@/motion/useMotion.js'
+import { EASE, DUR, STAGGER } from '@/motion/tokens.js'
 
 const route = useRoute()
 const isDetailPage = computed(() => route.path.startsWith('/work/'))
@@ -146,16 +148,16 @@ watch(isDetailPage, (val) => { if (val) closeMenu() })
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
-  
-  // Navbar Entrance Animation
-  if (navRef.value) {
-    const items = navRef.value.querySelectorAll('.navbar__logo, .navbar__link, .navbar__cta, .navbar__hamburger')
-    if (items.length) {
-      gsap.fromTo(items,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.4 }
-      )
-    }
+})
+
+// Navbar Entrance Animation (bagian dari first load, bareng intro 5 panel)
+useMotion(navRef, () => {
+  const items = navRef.value?.querySelectorAll('.navbar__logo, .navbar__link, .navbar__cta, .navbar__hamburger')
+  if (items?.length) {
+    gsap.fromTo(items,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: DUR.slow, stagger: STAGGER.base, ease: EASE.out, delay: 0.4 }
+    )
   }
 })
 

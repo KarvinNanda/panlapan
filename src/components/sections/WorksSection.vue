@@ -108,14 +108,14 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useTextReveal } from '@/composables/useTextReveal.js'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
+import { EASE, DUR, STAGGER } from '@/motion/tokens.js'
 import { posthog } from '@/main.js'
 import { scrollToTarget } from '@/motion/scrollTo.js'
 import projectsRaw from '@/data/projects.js'
 
 const projects = [...projectsRaw].sort((a, b) => a.title.localeCompare(b.title))
-
-const { revealText } = useTextReveal()
 
 const router      = useRouter()
 const sectionRef  = ref(null)
@@ -147,58 +147,50 @@ const scrollToConnect = () => {
 
 onMounted(() => {
   projects.forEach((_, i) => startAutoplay(i))
+})
 
-  gsapCtx = gsap.context(() => {
-    // 1. Text Reveal for header
-    const targets = headerRef.value?.querySelectorAll('.reveal-target')
-    if (targets?.length) {
-      revealText(targets, headerRef.value)
-    }
+useMotion(sectionRef, () => {
+  // 1. Header lines naik dari balik mask
+  revealLines(headerRef.value?.querySelectorAll('.reveal-target'), { trigger: headerRef.value })
 
-    // 2. Button fade in
-    gsap.fromTo(
-      headerRef.value?.querySelector('.works__header-cta'),
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.9, delay: 0.3, ease: 'power3.out', scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
+  // 2. Button fade in
+  fadeUp(headerRef.value?.querySelector('.works__header-cta'), { trigger: headerRef.value, delay: 0.3, start: 'top 80%' })
+
+  // 3. Cards — tiap kartu muncul saat masuk layar (batch), bukan satu stagger panjang
+  //    dari atas list: kartu ke-19 tidak lagi selesai animasi jauh sebelum terlihat.
+  const cards = listRef.value?.querySelectorAll('.works__card')
+  if (cards?.length) {
+    gsap.set(cards, { opacity: 0, y: 24 })
+    ScrollTrigger.batch(cards, {
+      start: 'top 88%',
+      once: true,
+      onEnter: batch => gsap.to(batch, {
+        opacity: 1, y: 0, duration: DUR.base, ease: EASE.out, stagger: STAGGER.base,
+        clearProps: 'transform', // hover lift (CSS) butuh transform bersih
+      }),
+    })
+  }
+
+  // 4. Parallax images
+  listRef.value?.querySelectorAll('[data-parallax]').forEach(wrap => {
+    gsap.fromTo(wrap,
+      { yPercent: -8 },
+      {
+        yPercent: 8,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: wrap.closest('.works__card-media'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true
+        }
+      }
     )
-
-    // 3. Card stagger
-    const cards = listRef.value?.querySelectorAll('.works__card')
-    if (cards?.length) {
-      gsap.fromTo(cards,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, stagger: 0.12, duration: 0.85, ease: 'power3.out',
-          scrollTrigger: { trigger: listRef.value, start: 'top 82%' } }
-      )
-    }
-
-    // 4. Parallax images
-    const parallaxWraps = listRef.value?.querySelectorAll('[data-parallax]')
-    if (parallaxWraps?.length) {
-      parallaxWraps.forEach(wrap => {
-        gsap.fromTo(wrap,
-          { yPercent: -8 },
-          {
-            yPercent: 8,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: wrap.closest('.works__card-media'),
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true
-            }
-          }
-        )
-      })
-    }
   })
 })
 
-let gsapCtx = null
-
 onUnmounted(() => {
   timers.forEach(t => clearInterval(t))
-  gsapCtx?.revert()
 })
 </script>
 
