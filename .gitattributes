@@ -1,0 +1,16 @@
+# Line ending selalu LF di repo — mencegah checkout Windows / editor
+# membuat semua file terlihat "modified" hanya karena CRLF.
+* text=auto eol=lf
+
+# Binary — jangan pernah diubah line ending-nya
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.webp   binary
+*.gif    binary
+*.ico    binary
+*.mp4    binary
+*.woff   binary
+*.woff2  binary
+*.zip    binary
+*.pdf    binary

@@ -49,6 +49,10 @@ pnpm-debug.log*
 coverage/
 *.lcov
 
+# Playwright output
+test-results/
+playwright-report/
+
 # File besar — exclude dari Git
 *.skp
 *.ai
