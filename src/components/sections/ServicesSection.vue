@@ -4,7 +4,9 @@
 
       <!-- Header: h2 dulu, lalu eyebrow di bawah (mobile: centered) -->
       <div class="services__header" ref="headerRef">
-        <h2 class="services__headline">Services</h2>
+        <h2 class="services__headline">
+          <span class="text-reveal-wrapper"><span class="reveal-target">Services</span></span>
+        </h2>
         <span class="eyebrow services__what">What We Do</span>
       </div>
 
@@ -47,26 +49,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useMagnet } from '@/composables/useMagnet.js'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
+import { EASE, DUR, STAGGER } from '@/motion/tokens.js'
 import { posthog } from '@/main.js'
-
-const { attach: magnet } = useMagnet()
+import { scrollToTarget } from '@/motion/scrollTo.js'
 
 const sectionRef   = ref(null)
 const headerRef    = ref(null)
 const dividerRef   = ref(null)
 const gridRef      = ref(null)
-const footerBtnRef = ref(null)
 
 const scrollToHero = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const scrollToConnect = () => {
-  document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })
+  scrollToTarget('connect')
   if (posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
@@ -98,35 +100,18 @@ const services = [
   }
 ]
 
-let ctx = null
+useMotion(sectionRef, () => {
+  revealLines(headerRef.value?.querySelectorAll('.reveal-target'), { trigger: headerRef.value, start: 'top 80%' })
+  fadeUp(headerRef.value?.querySelector('.eyebrow'), { trigger: headerRef.value, delay: 0.15, start: 'top 80%' })
 
-onMounted(() => {
-  magnet(footerBtnRef.value)
+  gsap.fromTo(dividerRef.value,
+    { scaleX: 0, transformOrigin: 'left' },
+    { scaleX: 1, duration: DUR.reveal, ease: EASE.inOut,
+      scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
+  )
 
-  ctx = gsap.context(() => {
-    gsap.fromTo(
-      headerRef.value?.querySelectorAll('h2, .eyebrow'),
-      { opacity: 0, y: 25 },
-      { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-    )
-    gsap.fromTo(dividerRef.value,
-      { scaleX: 0, transformOrigin: 'left' },
-      { scaleX: 1, duration: 1.2, ease: 'power4.inOut',
-        scrollTrigger: { trigger: dividerRef.value, start: 'top 85%' } }
-    )
-    const items = gridRef.value?.querySelectorAll('.service-item')
-    if (items?.length) {
-      gsap.fromTo(items,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: gridRef.value, start: 'top 80%' } }
-      )
-    }
-  })
+  fadeUp(gridRef.value?.querySelectorAll('.service-item'), { trigger: gridRef.value, y: 24, stagger: STAGGER.tight, start: 'top 80%' })
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>
@@ -161,11 +146,27 @@ onUnmounted(() => ctx?.revert())
 .service-item {
   padding: 2.5rem 0;
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  transition: padding-left 0.4s ease;
 }
 
 .service-item:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
-.service-item:hover        { padding-left: 0.5rem; }
+
+/* Hover geser pakai transform (bukan padding-left) — tidak memicu layout ulang */
+.service-item__header,
+.service-item__content {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .service-item:hover .service-item__header,
+  .service-item:hover .service-item__content { transform: translateX(0.5rem); }
+
+  .service-item:hover .service-item__title { color: rgba(255,255,255,0.7); }
+
+  .service-item:hover .service-item__list-item {
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.2);
+  }
+}
 
 .service-item__header {
   display: flex;
@@ -183,8 +184,6 @@ onUnmounted(() => ctx?.revert())
   flex: 1;
   transition: color 0.3s ease;
 }
-
-.service-item:hover .service-item__title { color: rgba(255,255,255,0.7); }
 
 /* content wrapper — desc + list */
 .service-item__content { margin-left: 3.5rem; }
@@ -211,12 +210,7 @@ onUnmounted(() => ctx?.revert())
   padding: 0.3rem 0.8rem;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 100px;
-  transition: all 0.3s ease;
-}
-
-.service-item:hover .service-item__list-item {
-  color: rgba(255,255,255,0.5);
-  border-color: rgba(255,255,255,0.2);
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Footer button — centered */
@@ -249,7 +243,6 @@ onUnmounted(() => ctx?.revert())
   letter-spacing: 0.02em;
   text-decoration: none;
   transition: all 0.35s ease;
-  cursor: none;
 }
 
 .services__footer-btn:hover {

@@ -57,7 +57,7 @@
             :key="item.label"
             :href="item.href"
             class="mobile-menu__link"
-            :style="{ transitionDelay: `${i * 0.07}s` }"
+            :style="{ transitionDelay: `${0.15 + i * 0.07}s` }"
             @click.prevent="mobileScrollTo(item.sectionId)"
           >
             <span class="mobile-menu__number">0{{ i + 1 }}</span>
@@ -79,6 +79,9 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { posthog } from '@/main.js'
+import { scrollToTarget } from '@/motion/scrollTo.js'
+import { useMotion } from '@/motion/useMotion.js'
+import { EASE, DUR, STAGGER } from '@/motion/tokens.js'
 
 const route = useRoute()
 const isDetailPage = computed(() => route.path.startsWith('/work/'))
@@ -97,16 +100,18 @@ const navItems = [
   { label: 'Connect',  href: '#connect',  sectionId: 'connect'  },
 ]
 
+// Durasi animasi tutup mobile menu (.mobile-menu-leave-active) — scroll baru jalan setelah menu hilang
+const MENU_LEAVE_MS = 350
+
 const scrollToSection = (id) => {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
+  scrollToTarget(id)
   // Cuma track klik "Start a Project" (target #connect), bukan nav item biasa (Work/Services/About)
   if (id === 'connect' && posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
 const mobileScrollTo = (id) => {
   closeMenu()
-  setTimeout(() => scrollToSection(id), 300)
+  setTimeout(() => scrollToSection(id), MENU_LEAVE_MS)
 }
 
 const handleScroll = () => {
@@ -143,16 +148,16 @@ watch(isDetailPage, (val) => { if (val) closeMenu() })
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
-  
-  // Navbar Entrance Animation
-  if (navRef.value) {
-    const items = navRef.value.querySelectorAll('.navbar__logo, .navbar__link, .navbar__cta, .navbar__hamburger')
-    if (items.length) {
-      gsap.fromTo(items,
-        { y: -20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', delay: 0.4 }
-      )
-    }
+})
+
+// Navbar Entrance Animation (bagian dari first load, bareng intro 5 panel)
+useMotion(navRef, () => {
+  const items = navRef.value?.querySelectorAll('.navbar__logo, .navbar__link, .navbar__cta, .navbar__hamburger')
+  if (items?.length) {
+    gsap.fromTo(items,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: DUR.slow, stagger: STAGGER.base, ease: EASE.out, delay: 0.4 }
+    )
   }
 })
 
@@ -257,11 +262,15 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   text-transform: uppercase;
   color: var(--color-white);
   text-decoration: none;
-  transition: all 0.3s ease;
-  cursor: none;
+  transition: border-color 0.3s ease, background 0.3s ease, transform var(--transition-press);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.navbar__cta:hover { border-color: var(--color-white); background: rgba(255,255,255,0.05); }
+@media (hover: hover) {
+  .navbar__cta:hover { border-color: var(--color-white); background: rgba(255,255,255,0.05); }
+}
+
+.navbar__cta:active { transform: scale(0.97); transition-duration: 0.12s; }
 
 .navbar__hamburger {
   display: none;
@@ -270,14 +279,13 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   background: none;
   border: none;
   padding: 0.5rem;
-  cursor: none;
 }
 
 .navbar__hamburger span {
   display: block;
   width: 24px; height: 1px;
   background: var(--color-white);
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   transform-origin: center;
 }
 
@@ -309,10 +317,29 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   text-decoration: none;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   letter-spacing: -0.02em;
-  transition: color 0.3s ease;
+  /* Transition selalu terpasang (bukan hanya di -enter-active): Vue melepas class
+     enter-active saat animasi panel selesai (0.5s), sedangkan link terakhir baru
+     selesai ~1s. transitionDelay per link di-set inline (stagger). */
+  transition: color 0.3s ease, opacity 0.5s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-menu__link:hover { color: rgba(255,255,255,0.5); }
+@media (hover: hover) {
+  .mobile-menu__link:hover { color: rgba(255,255,255,0.5); }
+}
+
+.mobile-menu__link:active { transform: scale(0.97); transition-duration: 0.12s; transition-delay: 0s; }
+
+/* Link & tombol naik satu per satu saat menu dibuka */
+.mobile-menu-enter-from .mobile-menu__link {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.mobile-menu-enter-from .mobile-menu__footer {
+  opacity: 0;
+  transform: translateY(16px);
+}
 
 .mobile-menu__number {
   font-size: 0.65rem;
@@ -323,10 +350,15 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   margin-top: 0.5rem;
 }
 
-.mobile-menu__footer { margin-top: auto; padding-top: 2rem; }
+.mobile-menu__footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  transition: opacity 0.5s ease 0.5s, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+}
 
-.mobile-menu-enter-active { animation: menuIn  0.5s cubic-bezier(0.25,0.46,0.45,0.94); }
-.mobile-menu-leave-active { animation: menuOut 0.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+.mobile-menu-enter-active { animation: menuIn  0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+/* Tutup lebih cepat dari buka (MENU_LEAVE_MS di script harus sama) */
+.mobile-menu-leave-active { animation: menuOut 0.35s cubic-bezier(0.55, 0, 1, 0.45); }
 
 @keyframes menuIn  { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0% 0); } }
 @keyframes menuOut { from { clip-path: inset(0 0 0% 0); }  to { clip-path: inset(0 0 100% 0); } }

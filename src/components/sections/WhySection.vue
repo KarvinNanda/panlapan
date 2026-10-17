@@ -4,10 +4,12 @@
 
       <!-- Header -->
       <div class="why__header" ref="headerRef">
-        <h2 class="why__title">Why panlapan</h2>
+        <h2 class="why__title">
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Why panlapan</span></span>
+        </h2>
         <p class="why__subtitle">
-          Strategy First.<br>
-          Creativity Second.
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Strategy First.</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Creativity Second.</span></span>
         </p>
       </div>
 
@@ -29,10 +31,10 @@
     <div class="why__band" ref="bandRef">
       <div class="why__band-inner">
         <p class="why__manifesto">
-          Because great creative work<br>
-          is not measured by how it looks.<br>
-          It's measured<br>
-          by what it accomplishes.
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Because great creative work</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">is not measured by how it looks.</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">It's measured</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">by what it accomplishes.</span></span>
         </p>
       </div>
     </div>
@@ -41,57 +43,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ref } from 'vue'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
 
 const sectionRef = ref(null)
 const headerRef  = ref(null)
 const zigzagRef  = ref(null)
 const bandRef    = ref(null)
 
-let ctx = null
+useMotion(sectionRef, () => {
+  // Title + 2 baris subtitle naik dari balik mask
+  revealLines(headerRef.value?.querySelectorAll('.reveal-target'), { trigger: headerRef.value, start: 'top 80%' })
 
-onMounted(() => {
-  ctx = gsap.context(() => {
-    gsap.fromTo(
-      headerRef.value?.querySelectorAll('.why__title, .why__subtitle'),
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: headerRef.value, start: 'top 80%' } }
-    )
+  // Q&A: arah masuk tetap (kiri dari kiri, kanan dari kanan) — itu bagian dari maknanya
+  const qaOpts = { trigger: zigzagRef.value, y: 0, start: 'top 82%' }
+  fadeUp(zigzagRef.value?.querySelector('.why__qa--left'),  { ...qaOpts, x: -24 })
+  fadeUp(zigzagRef.value?.querySelector('.why__qa--right'), { ...qaOpts, x: 24, delay: 0.18 })
 
-    // Q&A: left block slides from left, right block from right
-    const leftQ  = zigzagRef.value?.querySelector('.why__qa--left')
-    const rightQ = zigzagRef.value?.querySelector('.why__qa--right')
-    if (leftQ) {
-      gsap.fromTo(leftQ,
-        { opacity: 0, x: -50 },
-        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: zigzagRef.value, start: 'top 82%' } }
-      )
-    }
-    if (rightQ) {
-      gsap.fromTo(rightQ,
-        { opacity: 0, x: 50 },
-        { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: 0.18,
-          scrollTrigger: { trigger: zigzagRef.value, start: 'top 82%' } }
-      )
-    }
-
-    // Manifesto: word-by-word stagger
-    const manifesto = bandRef.value?.querySelector('.why__manifesto')
-    if (manifesto) {
-      gsap.fromTo(manifesto,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out',
-          scrollTrigger: { trigger: bandRef.value, start: 'top 75%' } }
-      )
-    }
-  })
+  // Manifesto: per baris
+  revealLines(bandRef.value?.querySelectorAll('.reveal-target'), { trigger: bandRef.value, start: 'top 75%' })
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

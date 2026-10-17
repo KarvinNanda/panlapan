@@ -62,69 +62,65 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMotion } from '@/motion/useMotion.js'
 
 const heroRef     = ref(null)
 const wordmarkRef = ref(null)
 const headlineRef = ref(null)
 
-let ctx = null
+// Timing hero sengaja TIDAK diubah (sinkron dengan intro 5 panel di App.vue).
+// useMotion hanya menambah: skip semua animasi kalau user minta reduced motion.
+useMotion(heroRef, () => {
+  const lines = headlineRef.value?.querySelectorAll('.hero__line')
+  const tl = gsap.timeline({ delay: 0.2 })
 
-onMounted(() => {
-  ctx = gsap.context(() => {
-    const lines = headlineRef.value?.querySelectorAll('.hero__line')
-    const tl = gsap.timeline({ delay: 0.2 })
+  if (wordmarkRef.value) {
+    gsap.set(wordmarkRef.value, { opacity: 0 })
+    tl.to(wordmarkRef.value, { opacity: 1, duration: 2, ease: 'power2.out' }, 0)
+  }
 
-    if (wordmarkRef.value) {
-      gsap.set(wordmarkRef.value, { opacity: 0 })
-      tl.to(wordmarkRef.value, { opacity: 1, duration: 2, ease: 'power2.out' }, 0)
-    }
+  if (lines?.length) {
+    // Charlie Osborne signature dramatic reveal: deeply offset, rotated, slow expo curve
+    gsap.set(lines, { y: '150%', rotationZ: 5, transformOrigin: '0% 50%' })
+    tl.to(lines, { 
+      y: '0%', 
+      rotationZ: 0, 
+      duration: 2, 
+      stagger: 0.15, 
+      ease: 'expo.out' 
+    }, 0.2)
+  }
 
-    if (lines?.length) {
-      // Charlie Osborne signature dramatic reveal: deeply offset, rotated, slow expo curve
-      gsap.set(lines, { y: '150%', rotationZ: 5, transformOrigin: '0% 50%' })
-      tl.to(lines, { 
-        y: '0%', 
-        rotationZ: 0, 
-        duration: 2, 
-        stagger: 0.15, 
-        ease: 'expo.out' 
-      }, 0.2)
-    }
+  // Scroll parallax — wordmark drifts up as you scroll away from hero
+  if (heroRef.value && wordmarkRef.value) {
+    gsap.to(wordmarkRef.value, {
+      yPercent: 28,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroRef.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.6,
+      }
+    })
+  }
 
-    // Scroll parallax — wordmark drifts up as you scroll away from hero
-    if (heroRef.value && wordmarkRef.value) {
-      gsap.to(wordmarkRef.value, {
-        yPercent: 28,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.value,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-        }
-      })
-    }
-
-    // Headline lines also drift slightly on scroll
-    if (heroRef.value && lines?.length) {
-      gsap.to(lines, {
-        yPercent: 12,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.value,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.4,
-        }
-      })
-    }
-  })
+  // Headline lines also drift slightly on scroll
+  if (heroRef.value && lines?.length) {
+    gsap.to(lines, {
+      yPercent: 12,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroRef.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.4,
+      }
+    })
+  }
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>

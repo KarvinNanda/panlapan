@@ -1,6 +1,8 @@
 <template>
-  <!-- Single root element required for <Transition> in App.vue -->
-  <main :class="project ? 'work-detail' : 'work-detail work-detail--404'">
+  <main ref="rootRef" :class="project ? 'work-detail' : 'work-detail work-detail--404'">
+    <!-- Single root element required for <Transition> in App.vue.
+         Komentar ini sengaja di DALAM <main>: di dev mode Vue menyimpan komentar,
+         jadi komentar di luar membuat root jadi fragment dan out-in macet. -->
 
     <!-- Scroll progress bar (only on real project page) -->
     <div class="work-detail__progress" ref="progressRef" v-if="project" />
@@ -10,7 +12,7 @@
 
     <!-- Back navigation -->
     <div class="work-detail__back-wrap" ref="backRef">
-      <a href="/" class="work-detail__back">
+      <a href="/" class="work-detail__back" @click="goBack">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M13 7H1M1 7L7 13M1 7L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -93,6 +95,7 @@
           :alt="`${project.title} — ${project.category} by Panlapan Creative Lab (${i + 1} of ${project.images.length})`"
           class="work-detail__image"
           loading="lazy"
+          @load="onImageLoad"
         />
       </div>
     </section>
@@ -110,17 +113,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useTextReveal } from '@/composables/useTextReveal.js'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
+import { EASE, DUR } from '@/motion/tokens.js'
 import { getProjectBySlug } from '@/data/projects.js'
 
-const { revealText } = useTextReveal()
-
 const route = useRoute()
+const router = useRouter()
 const project = computed(() => getProjectBySlug(route.params.slug))
 
 const descParagraphs = computed(() => {
@@ -173,6 +177,7 @@ useHead(() => ({
   ],
 }))
 
+const rootRef        = ref(null)
 const progressRef    = ref(null)
 const backRef        = ref(null)
 const headerRef      = ref(null)
@@ -183,6 +188,16 @@ const videoSectionRef = ref(null)
 const videoEl        = ref(null)
 const isPlaying      = ref(false)
 
+// Datang dari dalam situs → kembali ke posisi kartu terakhir (savedPosition).
+// Buka link project langsung (mis. dari Instagram) → ke Home, tepat di section Work.
+const goBack = (e) => {
+  // Cmd/Ctrl/Shift-click → biarkan browser buka tab baru (sama seperti RouterLink)
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+  e.preventDefault()
+  if (window.history.state?.back) router.back()
+  else router.push({ path: '/', hash: '#work' })
+}
+
 const playVideo = () => {
   if (videoEl.value) {
     videoEl.value.play()
@@ -190,111 +205,84 @@ const playVideo = () => {
   }
 }
 
-let ctx = null
 let onScroll = null
+let refreshTimer = null
 
-onMounted(async () => {
-  await nextTick()
+// Gambar galeri lazy-load → tingginya baru ada setelah load.
+// Refresh posisi trigger (debounced) supaya reveal jalan di titik yang benar.
+const onImageLoad = () => {
+  clearTimeout(refreshTimer)
+  refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 100)
+}
 
-  // Scroll progress bar
-  if (project.value) {
-    onScroll = () => {
-      if (!progressRef.value) return
-      const total = document.documentElement.scrollHeight - window.innerHeight
-      progressRef.value.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-  }
-
+onMounted(() => {
   if (!project.value) return
 
-  ctx = gsap.context(() => {
-    const tl = gsap.timeline({ delay: 0.1 })
+  // Scroll progress bar
+  onScroll = () => {
+    if (!progressRef.value) return
+    const total = document.documentElement.scrollHeight - window.innerHeight
+    progressRef.value.style.transform = `scaleX(${total > 0 ? window.scrollY / total : 0})`
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+})
 
-    if (backRef.value) {
-      tl.fromTo(backRef.value,
-        { opacity: 0, x: -16 },
-        { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }
+useMotion(rootRef, () => {
+  if (!project.value) return
+
+  const tl = gsap.timeline({ delay: 0.1 })
+
+  if (backRef.value) {
+    tl.fromTo(backRef.value,
+      { opacity: 0, x: -16 },
+      { opacity: 1, x: 0, duration: DUR.base, ease: EASE.out }
+    )
+  }
+
+  const titleRow = headerRef.value?.querySelector('.work-detail__title-row')
+  if (titleRow) {
+    const logo = titleRow.querySelector('.work-detail__logo')
+    if (logo) {
+      tl.fromTo(logo,
+        { opacity: 0, scale: 0.85 },
+        { opacity: 1, scale: 1, duration: DUR.base, ease: EASE.out },
+        '-=0.3'
       )
     }
+    revealLines(titleRow.querySelectorAll('.reveal-target'), { delay: 0.4 })
+  }
 
-    const titleRow = headerRef.value?.querySelector('.work-detail__title-row')
-    if (titleRow) {
-      const logo = titleRow.querySelector('.work-detail__logo')
-      const title = titleRow.querySelector('.work-detail__title')
-      if (logo) {
-        tl.fromTo(logo,
-          { opacity: 0, scale: 0.7 },
-          { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)' },
-          '-=0.1'
-        )
-      }
-      if (title) {
-        const target = title.querySelector('.reveal-target')
-        if (target) revealText(target, null, 0.4)
-      }
-    }
+  if (descRef.value) {
+    revealLines(descRef.value.querySelectorAll('.reveal-target'), { trigger: descRef.value })
+  }
 
-    if (descRef.value) {
-      const targets = descRef.value.querySelectorAll('.reveal-target')
-      if (targets?.length) revealText(targets, descRef.value, 0)
-    }
+  if (metaRef.value) {
+    fadeUp(metaRef.value, { trigger: metaRef.value, start: 'top 90%' })
+  }
 
-    if (metaRef.value) {
-      gsap.fromTo(metaRef.value,
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
-          scrollTrigger: { trigger: metaRef.value, start: 'top 90%' } }
-      )
-    }
+  if (videoSectionRef.value) {
+    fadeUp(videoSectionRef.value, { trigger: videoSectionRef.value, y: 24, start: 'top 90%' })
+  }
 
-    if (videoSectionRef.value) {
-      gsap.fromTo(videoSectionRef.value,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
-          scrollTrigger: { trigger: videoSectionRef.value, start: 'top 90%' } }
-      )
-    }
-
-    const wraps = galleryRef.value?.querySelectorAll('.work-detail__img-wrap')
-    if (wraps?.length) {
-      wraps.forEach((wrap) => {
-        // Entrance clip-path animation
-        gsap.fromTo(wrap,
-          { clipPath: 'inset(100% 0 0 0)' },
-          {
-            clipPath: 'inset(0% 0 0 0)',
-            duration: 1.2,
-            ease: 'power4.inOut',
-            scrollTrigger: { trigger: wrap, start: 'top 95%' }
-          }
-        )
-
-        // Image Parallax
-        const img = wrap.querySelector('.work-detail__image')
-        if (img) {
-          gsap.fromTo(img,
-            { yPercent: -8, scale: 1.15 },
-            {
-              yPercent: 8,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: wrap,
-                start: 'top bottom',
-                end: 'bottom top',
-                scrub: true
-              }
-            }
-          )
-        }
-      })
-    }
+  // Galeri: rise + fade. Wrap naik 48px sambil fade in, gambar turun dari zoom 1.06.
+  // Tidak ada parallax / clip — gambar tidak terpotong setelah selesai.
+  galleryRef.value?.querySelectorAll('.work-detail__img-wrap').forEach((wrap) => {
+    const img = wrap.querySelector('.work-detail__image')
+    gsap.timeline({
+      // Mulai begitu gambar masuk layar — kalau lebih telat, tepi bawah layar sempat kosong
+      scrollTrigger: { trigger: wrap, start: 'top bottom' },
+      // Hover zoom (CSS) baru aktif setelah reveal selesai, supaya tidak rebutan transform dengan GSAP
+      onComplete: () => wrap.classList.add('is-revealed'),
+    })
+      .fromTo(wrap, { y: 48 }, { y: 0, duration: DUR.slow, ease: EASE.out, clearProps: 'transform' }, 0)
+      .fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: 0.8, ease: EASE.out }, 0)
+      .fromTo(img, { scale: 1.06 }, { scale: 1, duration: 1.2, ease: EASE.out, clearProps: 'transform' }, 0)
   })
 })
 
 onUnmounted(() => {
   if (onScroll) window.removeEventListener('scroll', onScroll)
-  ctx?.revert()
+  clearTimeout(refreshTimer)
 })
 </script>
 
@@ -446,11 +434,17 @@ onUnmounted(() => {
   max-width: 100%;
   height: auto;
   max-height: 80vh;
-  transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.work-detail__img-wrap:hover .work-detail__image {
-  transform: scale(1.03);
+/* Hover zoom — desktop only, dan hanya setelah reveal GSAP selesai (.is-revealed) */
+@media (hover: hover) {
+  .work-detail__img-wrap.is-revealed .work-detail__image {
+    transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .work-detail__img-wrap.is-revealed:hover .work-detail__image {
+    transform: scale(1.03);
+  }
 }
 
 /* Video section */

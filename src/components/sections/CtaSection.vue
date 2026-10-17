@@ -5,8 +5,8 @@
       <!-- Main text block -->
       <div class="cta__text" ref="textRef">
         <h2 class="cta__headline">
-          Let's Build Something<br>
-          That Works.
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Let's Build Something</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">That Works.</span></span>
         </h2>
         <p class="cta__body">
           Not just something that looks good.<br>
@@ -30,13 +30,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useMagnet } from '@/composables/useMagnet.js'
+import { ref } from 'vue'
+import { useMotion } from '@/motion/useMotion.js'
+import { revealLines, fadeUp } from '@/motion/reveal.js'
 import { posthog } from '@/main.js'
-
-const { attach: magnet } = useMagnet(0.28)
 
 const sectionRef = ref(null)
 const textRef    = ref(null)
@@ -49,28 +46,12 @@ const trackCtaClick = () => {
   }
 }
 
-let ctx = null
-
-onMounted(() => {
-  magnet(ctaBtnRef.value)
-
-  ctx = gsap.context(() => {
-    gsap.fromTo(
-      textRef.value?.querySelectorAll('.cta__headline, .cta__body, .cta__impact'),
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, stagger: 0.15, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: textRef.value, start: 'top 80%' } }
-    )
-    gsap.fromTo(
-      ctaBtnRef.value,
-      { opacity: 0, y: 25 },
-      { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: bandRef.value, start: 'top 85%' } }
-    )
-  })
+useMotion(sectionRef, () => {
+  const textOpts = { trigger: textRef.value, start: 'top 80%' }
+  revealLines(textRef.value?.querySelectorAll('.cta__headline .reveal-target'), textOpts)
+  fadeUp(textRef.value?.querySelectorAll('.cta__body, .cta__impact'), { ...textOpts, delay: 0.3 })
+  fadeUp(ctaBtnRef.value, { trigger: bandRef.value, start: 'top 85%' })
 })
-
-onUnmounted(() => ctx?.revert())
 </script>
 
 <style scoped>
@@ -148,18 +129,26 @@ onUnmounted(() => ctx?.revert())
   font-weight: 500;
   letter-spacing: 0.02em;
   text-decoration: none;
-  transition: all 0.35s ease;
-  cursor: none;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease,
+              transform var(--transition-press);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.cta__btn:hover {
-  background: rgba(217, 217, 217, 0.30);
-  border-color: rgba(255, 255, 255, 0.45);
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+@media (hover: hover) {
+  .cta__btn:hover {
+    background: rgba(217, 217, 217, 0.30);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+.cta__btn:active {
+  transform: scale(0.97);
+  transition-duration: 0.12s;
 }
 
 /* ── MOBILE ── */
