@@ -12,7 +12,7 @@
 
     <!-- Back navigation -->
     <div class="work-detail__back-wrap" ref="backRef">
-      <a href="/" class="work-detail__back" @click.prevent="goBack">
+      <a href="/" class="work-detail__back" @click="goBack">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M13 7H1M1 7L7 13M1 7L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -190,7 +190,10 @@ const isPlaying      = ref(false)
 
 // Datang dari dalam situs → kembali ke posisi kartu terakhir (savedPosition).
 // Buka link project langsung (mis. dari Instagram) → ke Home, tepat di section Work.
-const goBack = () => {
+const goBack = (e) => {
+  // Cmd/Ctrl/Shift-click → biarkan browser buka tab baru (sama seperti RouterLink)
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+  e.preventDefault()
   if (window.history.state?.back) router.back()
   else router.push({ path: '/', hash: '#work' })
 }
