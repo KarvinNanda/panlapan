@@ -25,6 +25,7 @@
           v-for="(project, index) in projects"
           :key="project.slug"
           class="works__card project-card"
+          :data-index="index"
           @click="$router.push(`/work/${project.slug}`)"
         >
           <!-- Ken Burns image slider — hidden for video-only projects -->
@@ -140,13 +141,32 @@ const startAutoplay = (index) => {
   }, AUTOPLAY_MS)
 }
 
+const stopAutoplay = (index) => {
+  const imgs = projects[index]?.images
+  if (!imgs?.length || imgs.length <= 1) return
+  clearInterval(timers[index])
+  autoplayRunning[index] = false
+}
+
 const scrollToConnect = () => {
   scrollToTarget('connect')
   if (posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
+// Slideshow hanya jalan saat kartunya (hampir) terlihat — 19 interval yang jalan terus
+// di luar layar boros baterai dan bikin scroll di HP kurang mulus.
+let visibilityObserver = null
+
 onMounted(() => {
-  projects.forEach((_, i) => startAutoplay(i))
+  visibilityObserver = new IntersectionObserver((entries) => {
+    entries.forEach(({ target, isIntersecting }) => {
+      const index = Number(target.dataset.index)
+      if (isIntersecting) startAutoplay(index)
+      else stopAutoplay(index)
+    })
+  }, { rootMargin: '100px 0px' })
+
+  listRef.value?.querySelectorAll('.works__card').forEach(card => visibilityObserver.observe(card))
 })
 
 useMotion(sectionRef, () => {
@@ -190,6 +210,7 @@ useMotion(sectionRef, () => {
 })
 
 onUnmounted(() => {
+  visibilityObserver?.disconnect()
   timers.forEach(t => clearInterval(t))
 })
 </script>
