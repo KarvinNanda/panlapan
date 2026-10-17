@@ -20,7 +20,9 @@ export function onLeave(el, done) {
   const promise = new Promise(r => { resolve = r })
   leaving = { promise, resolve }
 
-  if (reduced()) return done()
+  // done() jangan dipanggil sinkron di dalam hook leave: Vue sedang patch,
+  // update out-in yang dipicu di tengahnya hilang dan halaman baru tidak pernah mount.
+  if (reduced()) return requestAnimationFrame(() => done())
   gsap.to(el, { opacity: 0, y: -12, duration: 0.26, ease: EASE.in, overwrite: true, onComplete: done })
 }
 

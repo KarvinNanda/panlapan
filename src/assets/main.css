@@ -436,5 +436,16 @@ html.lenis {
 
 /* Page transition is defined in App.vue <style> */
 
-/* ===== REDUCED MOTION ===== */
-/* Custom cursor tidak di-render saat reduced motion (lihat useCustomCursor) */
+/* ===== REDUCED MOTION =====
+   Animasi GSAP sudah di-skip lewat useMotion, custom cursor tidak di-render.
+   Ini untuk sisa animasi CSS: Ken Burns, progress bar, menu, hover & press. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}

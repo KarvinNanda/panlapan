@@ -40,6 +40,7 @@ import TheFooter from '@/components/layout/TheFooter.vue'
 import { useLenis } from '@/composables/useLenis.js'
 import { posthog } from '@/main.js'
 import { onLeave, onAfterLeave, onEnter, onAfterEnter } from '@/motion/pageTransition.js'
+import { MQ } from '@/motion/tokens.js'
 
 useLenis()
 
@@ -50,7 +51,10 @@ const introRef  = ref(null)
 
 onMounted(() => {
   const panels = introRef.value?.querySelectorAll('.intro-curtain__panel')
-  if (panels?.length) {
+  if (window.matchMedia(MQ.reduce).matches) {
+    // Reduced motion: tirai cukup memudar, tanpa gerakan naik
+    gsap.to(introRef.value, { opacity: 0, duration: 0.3, onComplete: () => { showIntro.value = false } })
+  } else if (panels?.length) {
     gsap.to(panels, {
       yPercent: -100,
       duration: 1.0,

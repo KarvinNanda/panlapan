@@ -4,9 +4,11 @@
 // target: id section (tanpa '#'), Element, atau posisi Y
 // ================================================
 import { getLenis } from '@/composables/useLenis.js'
-import { NAV_OFFSET } from './tokens.js'
+import { NAV_OFFSET, MQ } from './tokens.js'
 
 export function scrollToTarget(target, { immediate = false } = {}) {
+  // Reduced motion: langsung lompat, tanpa animasi scroll
+  immediate ||= window.matchMedia(MQ.reduce).matches
   const el = typeof target === 'string' ? document.getElementById(target) : target
   if (el == null) return
 

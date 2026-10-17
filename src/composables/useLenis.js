@@ -7,6 +7,7 @@ import { onMounted, onUnmounted } from 'vue'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MQ } from '@/motion/tokens.js'
 
 let lenis = null
 
@@ -20,6 +21,8 @@ export function useLenis() {
     lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // Reduced motion: wheel tidak di-smooth
+      smoothWheel: !window.matchMedia(MQ.reduce).matches,
     })
 
     // Connect Lenis to GSAP ScrollTrigger
