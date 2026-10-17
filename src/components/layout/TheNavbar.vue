@@ -114,15 +114,20 @@ const mobileScrollTo = (id) => {
   setTimeout(() => scrollToSection(id), MENU_LEAVE_MS)
 }
 
+// Navbar baru hide/show kalau scroll bergerak minimal segini. Getaran kecil (bounce iOS,
+// koreksi scroll anchoring setelah lompat) tidak lagi memunculkan navbar sekilas.
+const SCROLL_DELTA = 8
+
 const handleScroll = () => {
   const currentY = window.scrollY
   isScrolled.value = currentY > 50
-  if (currentY > lastScrollY && currentY > 100) {
-    isHidden.value = true
-  } else {
+  if (currentY <= 100) {
     isHidden.value = false
+    lastScrollY = currentY
+  } else if (Math.abs(currentY - lastScrollY) >= SCROLL_DELTA) {
+    isHidden.value = currentY > lastScrollY
+    lastScrollY = currentY
   }
-  lastScrollY = currentY
   const ids = navItems.map(i => i.sectionId)
   for (const id of [...ids].reverse()) {
     const el = document.getElementById(id)
