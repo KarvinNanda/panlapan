@@ -266,7 +266,8 @@ useMotion(rootRef, () => {
   galleryRef.value?.querySelectorAll('.work-detail__img-wrap').forEach((wrap) => {
     const img = wrap.querySelector('.work-detail__image')
     gsap.timeline({
-      scrollTrigger: { trigger: wrap, start: 'top 92%' },
+      // Mulai begitu gambar masuk layar — kalau lebih telat, tepi bawah layar sempat kosong
+      scrollTrigger: { trigger: wrap, start: 'top bottom' },
       // Hover zoom (CSS) baru aktif setelah reveal selesai, supaya tidak rebutan transform dengan GSAP
       onComplete: () => wrap.classList.add('is-revealed'),
     })
