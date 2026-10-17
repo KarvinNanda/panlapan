@@ -111,6 +111,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
 import { useTextReveal } from '@/composables/useTextReveal.js'
 import { posthog } from '@/main.js'
+import { scrollToTarget } from '@/motion/scrollTo.js'
 import projectsRaw from '@/data/projects.js'
 
 const projects = [...projectsRaw].sort((a, b) => a.title.localeCompare(b.title))
@@ -142,7 +143,7 @@ const startAutoplay = (index) => {
 }
 
 const scrollToConnect = () => {
-  document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })
+  scrollToTarget('connect')
   if (posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 

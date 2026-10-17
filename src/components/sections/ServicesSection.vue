@@ -52,6 +52,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useMagnet } from '@/composables/useMagnet.js'
 import { posthog } from '@/main.js'
+import { scrollToTarget } from '@/motion/scrollTo.js'
 
 const { attach: magnet } = useMagnet()
 
@@ -66,7 +67,7 @@ const scrollToHero = () => {
 }
 
 const scrollToConnect = () => {
-  document.getElementById('connect')?.scrollIntoView({ behavior: 'smooth' })
+  scrollToTarget('connect')
   if (posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 

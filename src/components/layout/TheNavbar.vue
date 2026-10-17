@@ -79,6 +79,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { gsap } from 'gsap'
 import { posthog } from '@/main.js'
+import { scrollToTarget } from '@/motion/scrollTo.js'
 
 const route = useRoute()
 const isDetailPage = computed(() => route.path.startsWith('/work/'))
@@ -97,16 +98,18 @@ const navItems = [
   { label: 'Connect',  href: '#connect',  sectionId: 'connect'  },
 ]
 
+// Durasi animasi tutup mobile menu (.mobile-menu-leave-active) — scroll baru jalan setelah menu hilang
+const MENU_LEAVE_MS = 400
+
 const scrollToSection = (id) => {
-  const el = document.getElementById(id)
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
+  scrollToTarget(id)
   // Cuma track klik "Start a Project" (target #connect), bukan nav item biasa (Work/Services/About)
   if (id === 'connect' && posthog.__loaded) posthog.capture('cta_scroll_clicked')
 }
 
 const mobileScrollTo = (id) => {
   closeMenu()
-  setTimeout(() => scrollToSection(id), 300)
+  setTimeout(() => scrollToSection(id), MENU_LEAVE_MS)
 }
 
 const handleScroll = () => {
