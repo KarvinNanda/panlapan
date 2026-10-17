@@ -8,7 +8,7 @@
           <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Why panlapan</span></span>
         </h2>
         <p class="why__subtitle">
-          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Strategy First.</span></span>
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Strategy First.</span></span>{{ ' ' }}
           <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Creativity Second.</span></span>
         </p>
       </div>
@@ -31,9 +31,9 @@
     <div class="why__band" ref="bandRef">
       <div class="why__band-inner">
         <p class="why__manifesto">
-          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Because great creative work</span></span>
-          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">is not measured by how it looks.</span></span>
-          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">It's measured</span></span>
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Because great creative work</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">is not measured by how it looks.</span></span>{{ ' ' }}
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">It's measured</span></span>{{ ' ' }}
           <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">by what it accomplishes.</span></span>
         </p>
       </div>

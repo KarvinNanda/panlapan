@@ -5,7 +5,7 @@
       <!-- Main text block -->
       <div class="cta__text" ref="textRef">
         <h2 class="cta__headline">
-          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Let's Build Something</span></span>
+          <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">Let's Build Something</span></span>{{ ' ' }}
           <span class="text-reveal-wrapper text-reveal-wrapper--descender"><span class="reveal-target">That Works.</span></span>
         </h2>
         <p class="cta__body">
