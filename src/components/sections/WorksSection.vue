@@ -178,30 +178,44 @@ useMotion(sectionRef, () => {
 
   // 3. Cards — tiap kartu muncul saat masuk layar (batch), bukan satu stagger panjang
   //    dari atas list: kartu ke-19 tidak lagi selesai animasi jauh sebelum terlihat.
+  //    Yang dianimasikan isi kartu (media + body), bukan .works__card: kartu punya CSS
+  //    transition transform (hover/press) yang akan ikut menghaluskan tiap frame GSAP.
   const cards = listRef.value?.querySelectorAll('.works__card')
   if (cards?.length) {
-    gsap.set(cards, { opacity: 0, y: 24 })
+    const partsOf = list => list.flatMap(card => [...card.querySelectorAll(':scope > .works__card-media, :scope > .works__card-body')])
+    gsap.set(partsOf([...cards]), { opacity: 0, y: 24 })
     ScrollTrigger.batch(cards, {
       start: 'top 88%',
       once: true,
-      onEnter: batch => gsap.to(batch, {
-        opacity: 1, y: 0, duration: DUR.base, ease: EASE.out, stagger: STAGGER.base,
-        clearProps: 'transform', // hover lift (CSS) butuh transform bersih
-      }),
+      onEnter: (batch) => {
+        // Kartu yang sudah terlewat (di atas layar, mis. setelah Back ke kartu bawah)
+        // langsung tampil — tidak ikut antre stagger di depan kartu yang sedang terlihat.
+        const passed = batch.filter(card => card.getBoundingClientRect().bottom <= 0)
+        gsap.set(partsOf(passed), { opacity: 1, y: 0, clearProps: 'transform' })
+        gsap.to(partsOf(batch.filter(card => !passed.includes(card))), {
+          opacity: 1, y: 0, duration: DUR.base, ease: EASE.out, stagger: STAGGER.base / 2,
+          clearProps: 'transform',
+        })
+      },
     })
   }
 
-  // 4. Parallax images
+  // 4. Parallax images — rentang scroll = saat media lewat layar (sama seperti sebelumnya).
+  //    Trigger-nya kartu (tidak di-transform), offset media dari layout (offsetTop):
+  //    media sendiri sedang di-transform oleh reveal di atas, jadi posisinya tidak bisa dipakai.
   listRef.value?.querySelectorAll('[data-parallax]').forEach(wrap => {
+    const media = wrap.closest('.works__card-media')
+    const card  = wrap.closest('.works__card')
+    const mediaTop = () => media.offsetTop - card.offsetTop
     gsap.fromTo(wrap,
       { yPercent: -8 },
       {
         yPercent: 8,
         ease: 'none',
         scrollTrigger: {
-          trigger: wrap.closest('.works__card-media'),
-          start: 'top bottom',
-          end: 'bottom top',
+          trigger: card,
+          start: () => `top+=${mediaTop()} bottom`,
+          end: () => `top+=${mediaTop() + media.offsetHeight} top`,
           scrub: true
         }
       }
