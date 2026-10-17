@@ -17,6 +17,8 @@ export const createApp = ViteSSG(
     // Register GSAP plugins — satu kali, di sini saja.
     // Composable & komponen tidak lagi register sendiri di level modul.
     gsap.registerPlugin(ScrollTrigger)
+    // Dev only — dipakai e2e test untuk cek posisi trigger & kebocoran trigger antar halaman
+    if (import.meta.env.DEV) window.__ST = ScrollTrigger
 
     // ── PostHog init — hanya capture pageview & basic events ───────────
     if (import.meta.env.VITE_POSTHOG_KEY) {
