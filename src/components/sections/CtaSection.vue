@@ -33,10 +33,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useMagnet } from '@/composables/useMagnet.js'
 import { posthog } from '@/main.js'
-
-const { attach: magnet } = useMagnet(0.28)
 
 const sectionRef = ref(null)
 const textRef    = ref(null)
@@ -52,8 +49,6 @@ const trackCtaClick = () => {
 let ctx = null
 
 onMounted(() => {
-  magnet(ctaBtnRef.value)
-
   ctx = gsap.context(() => {
     gsap.fromTo(
       textRef.value?.querySelectorAll('.cta__headline, .cta__body, .cta__impact'),
@@ -149,7 +144,6 @@ onUnmounted(() => ctx?.revert())
   letter-spacing: 0.02em;
   text-decoration: none;
   transition: all 0.35s ease;
-  cursor: none;
 }
 
 .cta__btn:hover {

@@ -86,10 +86,16 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: none; /* Custom cursor */
 }
 
-/* ===== CUSTOM CURSOR ===== */
+/* ===== CUSTOM CURSOR =====
+   Hanya aktif untuk mouse — useCustomCursor menambah html.has-custom-cursor.
+   Tanpa class itu (HP, tablet, reduced motion) cursor native tetap tampil. */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
 .cursor-dot {
   width: 8px;
   height: 8px;
@@ -100,57 +106,68 @@ body {
   left: 0;
   pointer-events: none;
   z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease;
   mix-blend-mode: difference;
 }
 
+/* Ring dibuat di ukuran terbesar (80px) lalu di-scale — lebih halus dari animasi width/height */
 .cursor-ring {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
   position: fixed;
   top: 0;
   left: 0;
   pointer-events: none;
   z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
   mix-blend-mode: difference;
 }
 
-.cursor-ring.is-hovering {
-  width: 60px;
-  height: 60px;
+.cursor-ring__circle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6); /* tampil 1px di scale 0.5 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.5);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s ease,
+              border-color 0.35s ease;
+}
+
+.cursor-ring.is-hover .cursor-ring__circle {
+  transform: scale(0.72);
   border-color: rgba(255, 255, 255, 1);
 }
 
-.cursor-ring.is-viewing {
-  width: 80px;
-  height: 80px;
-  background: var(--color-white);
-  border-color: var(--color-white);
+.cursor-ring.is-view {
   mix-blend-mode: normal; /* Normal blend mode so text is visible */
 }
 
+.cursor-ring.is-view .cursor-ring__circle {
+  transform: scale(1);
+  background: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.cursor-ring.is-down .cursor-ring__circle         { transform: scale(0.42); }
+.cursor-ring.is-view.is-down .cursor-ring__circle { transform: scale(0.9); }
+
 .cursor-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   color: var(--color-black);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
-.cursor-ring.is-viewing .cursor-text {
+.cursor-ring.is-view .cursor-text {
   opacity: 1;
+  transform: none;
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -285,7 +302,6 @@ html.lenis {
   text-transform: uppercase;
   border: none;
   border-radius: 100px;
-  cursor: none;
   transition: transform var(--transition-base), background var(--transition-base);
   text-decoration: none;
 }
@@ -309,7 +325,6 @@ html.lenis {
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 100px;
-  cursor: none;
   transition: all var(--transition-base);
   text-decoration: none;
 }
@@ -335,7 +350,6 @@ html.lenis {
   border-radius: 100px;
   border: none;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  cursor: none;
   text-decoration: none;
   transition: all 0.3s ease;
   isolation: isolate;
@@ -389,13 +403,4 @@ html.lenis {
 /* Page transition is defined in App.vue <style> */
 
 /* ===== REDUCED MOTION ===== */
-@media (prefers-reduced-motion: reduce) {
-  .cursor-dot,
-  .cursor-ring {
-    display: none;
-  }
-
-  body {
-    cursor: auto;
-  }
-}
+/* Custom cursor tidak di-render saat reduced motion (lihat useCustomCursor) */

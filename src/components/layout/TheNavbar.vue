@@ -261,7 +261,6 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   color: var(--color-white);
   text-decoration: none;
   transition: all 0.3s ease;
-  cursor: none;
 }
 
 .navbar__cta:hover { border-color: var(--color-white); background: rgba(255,255,255,0.05); }
@@ -273,7 +272,6 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll); document
   background: none;
   border: none;
   padding: 0.5rem;
-  cursor: none;
 }
 
 .navbar__hamburger span {

@@ -50,17 +50,13 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useMagnet } from '@/composables/useMagnet.js'
 import { posthog } from '@/main.js'
 import { scrollToTarget } from '@/motion/scrollTo.js'
-
-const { attach: magnet } = useMagnet()
 
 const sectionRef   = ref(null)
 const headerRef    = ref(null)
 const dividerRef   = ref(null)
 const gridRef      = ref(null)
-const footerBtnRef = ref(null)
 
 const scrollToHero = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -102,8 +98,6 @@ const services = [
 let ctx = null
 
 onMounted(() => {
-  magnet(footerBtnRef.value)
-
   ctx = gsap.context(() => {
     gsap.fromTo(
       headerRef.value?.querySelectorAll('h2, .eyebrow'),
@@ -250,7 +244,6 @@ onUnmounted(() => ctx?.revert())
   letter-spacing: 0.02em;
   text-decoration: none;
   transition: all 0.35s ease;
-  cursor: none;
 }
 
 .services__footer-btn:hover {
