@@ -6,6 +6,7 @@
 
 import { waitForLeave } from '@/motion/pageTransition.js'
 import { NAV_OFFSET } from '@/motion/tokens.js'
+import { getLenis } from '@/composables/useLenis.js'
 
 // Lazy-loaded views for performance
 const HomeView = () => import('@/views/HomeView.vue')
@@ -36,6 +37,9 @@ export const routes = [
 // supaya user tidak melihat halaman lama lompat ke atas.
 export async function scrollBehavior(to, from, savedPosition) {
   await waitForLeave()
+  // Hentikan smooth scroll Lenis yang mungkin masih jalan (wheel/trackpad sebelum klik),
+  // kalau tidak Lenis menimpa posisi scroll yang dipasang router di bawah ini.
+  getLenis()?.scrollTo(window.scrollY, { immediate: true, force: true })
   if (savedPosition) return { ...savedPosition, behavior: 'instant' }
   const el = to.hash && document.querySelector(to.hash)
   if (el) return { top: layoutTop(el) - NAV_OFFSET, behavior: 'instant' }
