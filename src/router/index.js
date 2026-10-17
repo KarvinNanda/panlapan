@@ -4,6 +4,9 @@
 // baik saat build (memory history) maupun di browser (web history).
 // ================================================
 
+import { waitForLeave } from '@/motion/pageTransition.js'
+import { NAV_OFFSET } from '@/motion/tokens.js'
+
 // Lazy-loaded views for performance
 const HomeView = () => import('@/views/HomeView.vue')
 const WorkDetailView = () => import('@/views/WorkDetailView.vue')
@@ -29,9 +32,22 @@ export const routes = [
 ]
 
 // Dipisah supaya bisa dioper apa adanya ke ViteSSG di main.js
-export function scrollBehavior(to, from, savedPosition) {
-  if (savedPosition) return savedPosition
+// Scroll baru dipasang setelah halaman lama selesai fade out (page transition),
+// supaya user tidak melihat halaman lama lompat ke atas.
+export async function scrollBehavior(to, from, savedPosition) {
+  await waitForLeave()
+  if (savedPosition) return { ...savedPosition, behavior: 'instant' }
+  const el = to.hash && document.querySelector(to.hash)
+  if (el) return { top: layoutTop(el) - NAV_OFFSET, behavior: 'instant' }
   return { top: 0, left: 0, behavior: 'instant' }
+}
+
+// Posisi dari layout (offsetTop), bukan getBoundingClientRect: halaman baru
+// sedang di-transform oleh animasi enter, jadi rect-nya masih bergeser.
+function layoutTop(el) {
+  let top = 0
+  for (let node = el; node; node = node.offsetParent) top += node.offsetTop
+  return top
 }
 
 export default routes

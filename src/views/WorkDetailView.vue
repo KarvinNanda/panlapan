@@ -1,6 +1,8 @@
 <template>
-  <!-- Single root element required for <Transition> in App.vue -->
   <main ref="rootRef" :class="project ? 'work-detail' : 'work-detail work-detail--404'">
+    <!-- Single root element required for <Transition> in App.vue.
+         Komentar ini sengaja di DALAM <main>: di dev mode Vue menyimpan komentar,
+         jadi komentar di luar membuat root jadi fragment dan out-in macet. -->
 
     <!-- Scroll progress bar (only on real project page) -->
     <div class="work-detail__progress" ref="progressRef" v-if="project" />
@@ -10,7 +12,7 @@
 
     <!-- Back navigation -->
     <div class="work-detail__back-wrap" ref="backRef">
-      <a href="/" class="work-detail__back">
+      <a href="/" class="work-detail__back" @click.prevent="goBack">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <path d="M13 7H1M1 7L7 13M1 7L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -112,7 +114,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -122,6 +124,7 @@ import { EASE, DUR } from '@/motion/tokens.js'
 import { getProjectBySlug } from '@/data/projects.js'
 
 const route = useRoute()
+const router = useRouter()
 const project = computed(() => getProjectBySlug(route.params.slug))
 
 const descParagraphs = computed(() => {
@@ -184,6 +187,13 @@ const galleryRef     = ref(null)
 const videoSectionRef = ref(null)
 const videoEl        = ref(null)
 const isPlaying      = ref(false)
+
+// Datang dari dalam situs → kembali ke posisi kartu terakhir (savedPosition).
+// Buka link project langsung (mis. dari Instagram) → ke Home, tepat di section Work.
+const goBack = () => {
+  if (window.history.state?.back) router.back()
+  else router.push({ path: '/', hash: '#work' })
+}
 
 const playVideo = () => {
   if (videoEl.value) {
