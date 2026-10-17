@@ -129,17 +129,26 @@ useMotion(sectionRef, () => {
   font-weight: 500;
   letter-spacing: 0.02em;
   text-decoration: none;
-  transition: all 0.35s ease;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease,
+              transform var(--transition-press);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.cta__btn:hover {
-  background: rgba(217, 217, 217, 0.30);
-  border-color: rgba(255, 255, 255, 0.45);
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.30),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+@media (hover: hover) {
+  .cta__btn:hover {
+    background: rgba(217, 217, 217, 0.30);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.30),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+.cta__btn:active {
+  transform: scale(0.97);
+  transition-duration: 0.12s;
 }
 
 /* ── MOBILE ── */

@@ -61,6 +61,8 @@
   --section-padding-mobile: 5rem 1.5rem;
   --transition-base: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --transition-slow: 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Lepas tekan: halus (expo.out). Saat ditekan: cepat (lihat PRESS FEEDBACK) */
+  --transition-press: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ===== RESET & BASE ===== */
@@ -313,13 +315,15 @@ html.lenis {
   text-transform: uppercase;
   border: none;
   border-radius: 100px;
-  transition: transform var(--transition-base), background var(--transition-base);
+  transition: transform var(--transition-press), background var(--transition-base);
   text-decoration: none;
 }
 
-.btn-primary:hover {
-  transform: scale(1.04);
-  background: rgba(255, 255, 255, 0.9);
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: scale(1.04);
+    background: rgba(255, 255, 255, 0.9);
+  }
 }
 
 .btn-outline {
@@ -336,13 +340,15 @@ html.lenis {
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 100px;
-  transition: all var(--transition-base);
+  transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-press);
   text-decoration: none;
 }
 
-.btn-outline:hover {
-  border-color: var(--color-white);
-  background: rgba(255, 255, 255, 0.05);
+@media (hover: hover) {
+  .btn-outline:hover {
+    border-color: var(--color-white);
+    background: rgba(255, 255, 255, 0.05);
+  }
 }
 
 /* Navy button — dipakai di Works & Services section */
@@ -362,7 +368,7 @@ html.lenis {
   border: none;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform var(--transition-press);
   isolation: isolate;
 }
 
@@ -397,10 +403,27 @@ html.lenis {
   pointer-events: none;
 }
 
-.btn-navy:hover {
-  background: rgba(21, 64, 133, 0.70);
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .btn-navy:hover {
+    background: rgba(21, 64, 133, 0.70);
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
+    transform: translateY(-1px);
+  }
+}
+
+/* ===== PRESS FEEDBACK (tap / click) =====
+   Mengecil sedikit saat ditekan, kembali halus saat dilepas. */
+.btn-primary,
+.btn-outline,
+.btn-navy {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary:active,
+.btn-outline:active,
+.btn-navy:active {
+  transform: scale(0.97);
+  transition-duration: 0.12s;
 }
 
 /* ===== MARQUEE / TICKER ===== */

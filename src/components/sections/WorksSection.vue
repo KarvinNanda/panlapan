@@ -266,16 +266,32 @@ onUnmounted(() => {
   border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   padding: 2rem 0;
   cursor: pointer;
-  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  transition: transform var(--transition-press);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .works__card:first-child { border-top: 1px solid rgba(255, 255, 255, 0.10); }
 
-.works__card:hover { transform: translateY(-3px); }
+/* Tap / click feedback */
+.works__card:active {
+  transform: scale(0.98);
+  transition-duration: 0.12s;
+}
 
-.works__card:hover .works__card-media {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(255, 255, 255, 0.08);
+/* Hover hanya di device yang punya hover — di HP efek ini "nyangkut" setelah tap */
+@media (hover: hover) {
+  .works__card:hover { transform: translateY(-3px); }
+
+  .works__card:hover .works__card-media {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+
+  .works__card:hover .works__card-slide.is-active .works__card-img {
+    transform: scale(1.06) !important; /* override kenBurns end state */
+  }
+
+  .works__card:hover .works__card-cta { color: var(--color-white); }
 }
 
 /* ── Ken Burns slider ── */
@@ -323,10 +339,6 @@ onUnmounted(() => {
   transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Hover: scale image, lift card body */
-.works__card:hover .works__card-slide.is-active .works__card-img {
-  transform: scale(1.06) !important; /* override kenBurns end state */
-}
 
 /* Progress bar */
 .works__card-progress {
@@ -412,8 +424,6 @@ onUnmounted(() => {
   color: rgb(255, 255, 255);
   transition: color 0.3s ease;
 }
-
-.works__card:hover .works__card-cta { color: var(--color-white); }
 
 /* Right meta */
 .works__card-right {

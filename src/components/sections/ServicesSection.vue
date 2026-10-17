@@ -146,11 +146,27 @@ useMotion(sectionRef, () => {
 .service-item {
   padding: 2.5rem 0;
   border-bottom: 1px solid rgba(255,255,255,0.08);
-  transition: padding-left 0.4s ease;
 }
 
 .service-item:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
-.service-item:hover        { padding-left: 0.5rem; }
+
+/* Hover geser pakai transform (bukan padding-left) — tidak memicu layout ulang */
+.service-item__header,
+.service-item__content {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .service-item:hover .service-item__header,
+  .service-item:hover .service-item__content { transform: translateX(0.5rem); }
+
+  .service-item:hover .service-item__title { color: rgba(255,255,255,0.7); }
+
+  .service-item:hover .service-item__list-item {
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.2);
+  }
+}
 
 .service-item__header {
   display: flex;
@@ -168,8 +184,6 @@ useMotion(sectionRef, () => {
   flex: 1;
   transition: color 0.3s ease;
 }
-
-.service-item:hover .service-item__title { color: rgba(255,255,255,0.7); }
 
 /* content wrapper — desc + list */
 .service-item__content { margin-left: 3.5rem; }
@@ -196,12 +210,7 @@ useMotion(sectionRef, () => {
   padding: 0.3rem 0.8rem;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 100px;
-  transition: all 0.3s ease;
-}
-
-.service-item:hover .service-item__list-item {
-  color: rgba(255,255,255,0.5);
-  border-color: rgba(255,255,255,0.2);
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Footer button — centered */

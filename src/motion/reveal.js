@@ -16,12 +16,13 @@ export function revealLines(targets, { trigger = null, delay = 0, start = 'top 8
   )
 }
 
-// Body text / elemen kecil / list: fade sambil naik sedikit
+// Body text / elemen kecil / list: fade sambil naik sedikit.
+// clearProps: inline transform yang tersisa akan mengalahkan CSS :hover / :active (mis. tombol).
 export function fadeUp(targets, { trigger = null, x = 0, y = 16, stagger = STAGGER.base, delay = 0, start = 'top 85%' } = {}) {
   if (!targets || targets.length === 0) return
   gsap.fromTo(targets,
     { opacity: 0, x, y },
-    { opacity: 1, x: 0, y: 0, duration: DUR.base, ease: EASE.out, stagger, delay,
+    { opacity: 1, x: 0, y: 0, duration: DUR.base, ease: EASE.out, stagger, delay, clearProps: 'transform',
       scrollTrigger: scrollTriggerFor(trigger, start) }
   )
 }
